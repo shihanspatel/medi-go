@@ -110,7 +110,7 @@
 
                     <div class="glass-pill">
                         <a href="{{ route('login') }}" class="pill-btn red">Log In</a>
-                        <a href="{{ route('signup') }}" class="pill-btn blue">Sign Up</a>
+                        <a href="{{ route('register') }}" class="pill-btn blue">Sign Up</a>
                     </div>
                     
                     <a href="#" class="btn btn-dark rounded-circle position-relative d-flex align-items-center justify-content-center shadow-sm ms-lg-2" style="width: 45px; height: 45px;">
