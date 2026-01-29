@@ -130,9 +130,39 @@
             height: 10px;
             border-radius: 50%;
         }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                left: -260px;
+            }
+            .admin-sidebar.show {
+                left: 0;
+            }
+            .admin-topbar,
+            .admin-content {
+                margin-left: 0 !important;
+            }
+            .mobile-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.4);
+                z-index: 900;
+                display: none;
+            }
+            .mobile-overlay.show {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
 <!-- Sidebar -->
 <div class="admin-sidebar" id="sidebar">
@@ -146,37 +176,37 @@
         <span class="link-text">Dashboard</span>
     </a>
 
-    <a href="#" class="admin-link">
+    <a href="{{ url('/admin/users') }}" class="admin-link">
         <i class="fas fa-users"></i>
         <span class="link-text">Users</span>
     </a>
 
-    <a href="#" class="admin-link">
+    <a href="{{ url('/admin/products') }}" class="admin-link">
         <i class="fas fa-pills"></i>
         <span class="link-text">Products</span>
     </a>
 
-    <a href="#" class="admin-link">
+    <a href="{{ url('/admin/categories') }}" class="admin-link">
         <i class="fas fa-layer-group"></i>
         <span class="link-text">Categories</span>
     </a>
 
-    <a href="#" class="admin-link">
+    <a href="{{ url('/admin/offers') }}" class="admin-link">
         <i class="fas fa-tags"></i>
         <span class="link-text">Offers</span>
     </a>
 
-    <a href="#" class="admin-link">
+    <a href="{{ url('/admin/orders') }}" class="admin-link">
         <i class="fas fa-shopping-bag"></i>
         <span class="link-text">Orders</span>
     </a>
 
-    <a href="#" class="admin-link">
+    <a href="{{ url('/admin/ratings') }}" class="admin-link">
         <i class="fas fa-star"></i>
         <span class="link-text">Ratings</span>
     </a>
 
-    <a href="#" class="admin-link">
+    <a href="{{ url('/admin/contact') }}" class="admin-link">
         <i class="fas fa-headset"></i>
         <span class="link-text">Contact Us</span>
     </a>
@@ -202,18 +232,17 @@
     </div>
 
     <div class="d-flex align-items-center gap-3">
-
         <!-- Wishlist -->
-        <div class="icon-btn" title="Wishlist">
+        <a href="{{ url('/admin/wishlist') }}" class="icon-btn" title="Wishlist">
             <i class="fas fa-heart"></i>
             <span class="badge-dot"></span>
-        </div>
+        </a>
 
         <!-- Cart -->
-        <div class="icon-btn" title="Cart">
+        <a href="{{ url('/admin/cart') }}" class="icon-btn" title="Cart">
             <i class="fas fa-shopping-cart"></i>
             <span class="badge-dot"></span>
-        </div>
+        </a>
 
         <!-- Profile -->
         <div class="dropdown">
@@ -223,8 +252,16 @@
             </div>
 
             <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                <li>
+                    <a class="dropdown-item" href="{{ url('/admin/profile') }}">
+                        <i class="fas fa-user me-2"></i>Profile
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{{ url('/admin/settings') }}">
+                        <i class="fas fa-cog me-2"></i>Settings
+                    </a>
+                </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <a class="dropdown-item text-danger" href="{{ route('logout') }}"
@@ -234,9 +271,9 @@
                 </li>
             </ul>
         </div>
-
     </div>
 </div>
+
 
 <!-- Content -->
 <div class="admin-content" id="content">
@@ -245,12 +282,29 @@
 
 <script>
 function toggleSidebar() {
-    sidebar.classList.toggle('collapsed');
-    topbar.classList.toggle('collapsed');
-    content.classList.toggle('collapsed');
+    let sidebar = document.getElementById('sidebar');
+    let topbar = document.getElementById('topbar');
+    let content = document.getElementById('content');
+    let overlay = document.getElementById('overlay');
+
+    if (window.innerWidth > 768) {
+        sidebar.classList.toggle('collapsed');
+        topbar.classList.toggle('collapsed');
+        content.classList.toggle('collapsed');
+    } else {
+        sidebar.classList.toggle('show');
+        overlay.classList.toggle('show');
+    }
 }
 
-// Active link highlight
+// Auto close on mobile
+document.querySelectorAll('.admin-link').forEach(link => {
+    link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) toggleSidebar();
+    });
+});
+
+// Active link
 document.querySelectorAll('.admin-link').forEach(link => {
     link.addEventListener('click', function() {
         document.querySelectorAll('.admin-link').forEach(l => l.classList.remove('active'));

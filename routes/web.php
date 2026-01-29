@@ -30,3 +30,44 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/admin/dashboard', function () {
     return view('admin.Admin_dashboard');
 });
+
+Route::get('/admin/users', function () {
+    return view('admin.admin_User');
+});
+
+Route::get('/admin/categories', function () {
+    return view('admin.admin_categories');
+});
+
+Route::get('/admin/products', function () {
+    return view('admin.admin_products');
+});
+
+Route::get('/admin/offers', function () {
+    return view('admin.admin_offers');
+});
+
+Route::get('/admin/orders', function () {
+    return view('admin.Admin_orders');
+});
+
+Route::get('/admin/ratings', function () {
+    return view('admin.Admin_ratings');
+});
+
+Route::get('/admin/contact', function () {
+    return view('admin.Admin_contact');
+});
+
+Route::get('/admin/cart', function () {
+    return view('admin.Admin_cart');
+});
+
+Route::get('/admin/wishlist', function () {
+    return view('admin.admin_wishlist');
+});
+
+Route::get('/admin/profile', function () {
+    return view('admin.admin_profile');
+});
+
