@@ -34,17 +34,14 @@
             z-index: 1000;
         }
 
-        .admin-sidebar.collapsed {
-            width: 90px;
-        }
+        .admin-sidebar.collapsed { width: 90px; }
+        .admin-sidebar.collapsed .link-text { display: none; }
 
         .admin-logo {
             font-size: 1.4rem;
             font-weight: 800;
             color: var(--primary);
             margin-bottom: 30px;
-            white-space: nowrap;
-            overflow: hidden;
         }
 
         .admin-link {
@@ -58,13 +55,9 @@
             margin-bottom: 10px;
             transition: 0.3s;
             font-weight: 600;
-            position: relative;
         }
 
-        .admin-link i {
-            width: 22px;
-            text-align: center;
-        }
+        .admin-link i { width: 22px; text-align: center; }
 
         .admin-link:hover {
             background: #ecfdf5;
@@ -75,10 +68,6 @@
         .admin-link.active {
             background: linear-gradient(135deg, #ecfdf5, #d1fae5);
             color: var(--primary);
-        }
-
-        .admin-sidebar.collapsed .link-text {
-            display: none;
         }
 
         /* Topbar */
@@ -95,9 +84,7 @@
             transition: 0.4s;
         }
 
-        .admin-topbar.collapsed {
-            margin-left: 90px;
-        }
+        .admin-topbar.collapsed { margin-left: 90px; }
 
         .admin-content {
             margin-left: 260px;
@@ -105,13 +92,11 @@
             transition: 0.4s;
         }
 
-        .admin-content.collapsed {
-            margin-left: 90px;
-        }
+        .admin-content.collapsed { margin-left: 90px; }
 
         .admin-avatar {
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: var(--primary);
             display: flex;
@@ -121,24 +106,29 @@
             font-weight: 700;
         }
 
-        .toggle-btn {
+        .toggle-btn { cursor: pointer; font-size: 1.3rem; }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ecfdf5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            position: relative;
             cursor: pointer;
-            font-size: 1.3rem;
-            color: var(--dark);
         }
 
-        /* Mobile */
-        @media (max-width: 768px) {
-            .admin-sidebar {
-                left: -260px;
-            }
-            .admin-sidebar.show {
-                left: 0;
-            }
-            .admin-topbar,
-            .admin-content {
-                margin-left: 0 !important;
-            }
+        .badge-dot {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: red;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
         }
     </style>
 </head>
@@ -167,13 +157,28 @@
     </a>
 
     <a href="#" class="admin-link">
+        <i class="fas fa-layer-group"></i>
+        <span class="link-text">Categories</span>
+    </a>
+
+    <a href="#" class="admin-link">
+        <i class="fas fa-tags"></i>
+        <span class="link-text">Offers</span>
+    </a>
+
+    <a href="#" class="admin-link">
         <i class="fas fa-shopping-bag"></i>
         <span class="link-text">Orders</span>
     </a>
 
     <a href="#" class="admin-link">
-        <i class="fas fa-layer-group"></i>
-        <span class="link-text">Categories</span>
+        <i class="fas fa-star"></i>
+        <span class="link-text">Ratings</span>
+    </a>
+
+    <a href="#" class="admin-link">
+        <i class="fas fa-headset"></i>
+        <span class="link-text">Contact Us</span>
     </a>
 
     <hr>
@@ -197,8 +202,39 @@
     </div>
 
     <div class="d-flex align-items-center gap-3">
-        <span class="fw-bold">Admin</span>
-        <div class="admin-avatar">A</div>
+
+        <!-- Wishlist -->
+        <div class="icon-btn" title="Wishlist">
+            <i class="fas fa-heart"></i>
+            <span class="badge-dot"></span>
+        </div>
+
+        <!-- Cart -->
+        <div class="icon-btn" title="Cart">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge-dot"></span>
+        </div>
+
+        <!-- Profile -->
+        <div class="dropdown">
+            <div class="d-flex align-items-center gap-2 dropdown-toggle" data-bs-toggle="dropdown" style="cursor:pointer;">
+                <div class="admin-avatar">A</div>
+                <span class="fw-bold">Admin</span>
+            </div>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow">
+                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+
     </div>
 </div>
 
@@ -209,10 +245,6 @@
 
 <script>
 function toggleSidebar() {
-    let sidebar = document.getElementById('sidebar');
-    let topbar = document.getElementById('topbar');
-    let content = document.getElementById('content');
-
     sidebar.classList.toggle('collapsed');
     topbar.classList.toggle('collapsed');
     content.classList.toggle('collapsed');
@@ -227,5 +259,6 @@ document.querySelectorAll('.admin-link').forEach(link => {
 });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
