@@ -1,6 +1,6 @@
 @extends('master_nav')
 
-@section('title', 'MediSwift - Login')
+@section('title', 'Medi-Go - Login')
 
 @section('styles')
 <style>
@@ -117,7 +117,7 @@
         </div>
 
         <h3 class="login-title">Welcome Back</h3>
-        <p class="text-muted mb-4">Login to your MediSwift account</p>
+        <p class="text-muted mb-4">Login to your Medi-Go account</p>
 
         {{-- Error Message --}}
         @if(session('error'))

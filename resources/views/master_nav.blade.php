@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'MediSwift')</title>
+    <title>@yield('title', 'Medi-Go')</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -92,7 +92,7 @@
     <nav class="navbar navbar-expand-lg master-nav sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                <i class="fas fa-plus-circle"></i> MediSwift
+                <i class="fas fa-plus-circle"></i> Medi-Go
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" id="navbarToggler">
@@ -112,11 +112,6 @@
                         <a href="{{ route('login') }}" class="pill-btn red">Log In</a>
                         <a href="{{ route('register') }}" class="pill-btn blue">Sign Up</a>
                     </div>
-                    
-                    <a href="#" class="btn btn-dark rounded-circle position-relative d-flex align-items-center justify-content-center shadow-sm ms-lg-2" style="width: 45px; height: 45px;">
-                        <i class="fas fa-shopping-bag small"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success border border-light" id="cart-count">0</span>
-                    </a>
                 </div>
             </div>
         </div>
@@ -129,10 +124,10 @@
     <footer class="bg-dark text-white pt-5 pb-3">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 mb-4"><h4 class="fw-bold text-white mb-3">MediSwift</h4><p class="text-secondary small">Your trusted partner for 100% genuine medicines.</p></div>
+                <div class="col-lg-4 mb-4"><h4 class="fw-bold text-white mb-3">Medi-Go</h4><p class="text-secondary small">Your trusted partner for 100% genuine medicines.</p></div>
                 <div class="col-lg-4"><h6 class="fw-bold mb-3">Subscribe</h6><div class="input-group"><input type="text" class="form-control" placeholder="Email"><button class="btn btn-success"><i class="fas fa-paper-plane"></i></button></div></div>
             </div>
-            <hr class="border-secondary"><p class="text-center small text-secondary">&copy; 2024 MediSwift. All rights reserved.</p>
+            <hr class="border-secondary"><p class="text-center small text-secondary">&copy; 2024 Medi-Go. All rights reserved.</p>
         </div>
     </footer>
 

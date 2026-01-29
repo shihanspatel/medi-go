@@ -1,6 +1,6 @@
 @extends('master_nav')
 
-@section('title', 'MediSwift - Home')
+@section('title', 'Medi-Go - Home')
 
 @section('styles')
 <style>
