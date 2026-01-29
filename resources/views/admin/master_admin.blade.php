@@ -138,7 +138,7 @@
 <div class="admin-sidebar" id="sidebar">
     <div class="admin-logo">
         <i class="fas fa-plus-circle"></i>
-        <span class="link-text"> MediSwift</span>
+        <span class="link-text"> MediGo</span>
     </div>
 
     <a href="{{ url('/admin/dashboard') }}" class="admin-link active">
