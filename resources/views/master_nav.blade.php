@@ -277,6 +277,8 @@
 
                 <div class="d-flex align-items-center gap-4">
                     <a href="{{ url('/about') }}" class="nav-link-custom">About Us</a>
+                    <a href="{{ url('/contact-us') }}" class="nav-link-custom">contact Us</a>
+
 
                     <div class="glass-pill">
                         <a href="{{ route('login') }}" class="pill-btn red">Log In</a>

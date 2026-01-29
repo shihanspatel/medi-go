@@ -145,7 +145,7 @@
                 <div>
                     <input type="checkbox"> Remember me
                 </div>
-                <a href="#" class="text-success fw-bold text-decoration-none">Forgot?</a>
+                <a href="{{url('forgot') }}" class="text-success fw-bold text-decoration-none">Forgot?</a>
             </div>
 
             <button type="submit" id="loginBtn" class="login-btn mb-3">

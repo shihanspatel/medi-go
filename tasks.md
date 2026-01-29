@@ -17,3 +17,5 @@ i had done chte needed changes -okk
 ***************Priyal*****************
 #=====================================
 1. priyal need to cerate the productspage for the normal user smathcing with the themees
+2. review the webiste and give smit to add the images and produucts content need ot change the details only and in filters as well okk.
+3. add links for redirection

@@ -1,4 +1,4 @@
-@extends('master_nav')
+@extends('after_login_master_nav')
 
 @section('title', 'Medicines - Browse All')
 
@@ -310,7 +310,7 @@
 
                 <div class="col-md-4 col-6">
                     <div class="product-card">
-                        <a href="{{ url('/view_product_') }}" class="text-decoration-none">
+                        <a href="{{ url('/view_product') }}" class="text-decoration-none">
                             <div class="prod-img-wrap">
                                 <span class="badge-otc">OTC</span>
                                 <span class="badge-new">NEW</span>

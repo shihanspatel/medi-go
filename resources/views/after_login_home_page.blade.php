@@ -162,7 +162,7 @@
         </div>
         <div class="row g-4">
             <div class="col-6 col-md-3" data-aos="zoom-in" data-aos-delay="100">
-                <a href="{{ url('/medicines') }}" class="text-decoration-none">
+                <a href="{{ url('/medicines_') }}" class="text-decoration-none">
                     <div class="category-card">
                         <div class="cat-icon-box"><i class="fas fa-pills"></i></div>
                         <h6 class="fw-bold text-dark">Medicines</h6>
@@ -170,7 +170,7 @@
                 </a>
             </div>
             <div class="col-6 col-md-3" data-aos="zoom-in" data-aos-delay="200">
-                <a href="{{ url('/baby_care') }}" class="text-decoration-none">
+                <a href="{{ url('/baby_care_') }}" class="text-decoration-none">
                     <div class="category-card">
                         <div class="cat-icon-box"><i class="fas fa-baby-carriage"></i></div>
                         <h6 class="fw-bold text-dark">Baby Care</h6>
@@ -178,7 +178,7 @@
                 </a>
             </div>
             <div class="col-6 col-md-3" data-aos="zoom-in" data-aos-delay="300">
-                <a href="{{ url('/devices') }}" class="text-decoration-none">
+                <a href="{{ url('/devices_') }}" class="text-decoration-none">
                     <div class="category-card">
                         <div class="cat-icon-box"><i class="fas fa-heartbeat"></i></div>
                         <h6 class="fw-bold text-dark">Devices</h6>
@@ -186,7 +186,7 @@
                 </a>
             </div>
             <div class="col-6 col-md-3" data-aos="zoom-in" data-aos-delay="400">
-                <a href="{{ url('/nutration') }}" class="text-decoration-none">
+                <a href="{{ url('/nutration_') }}" class="text-decoration-none">
                     <div class="category-card">
                         <div class="cat-icon-box"><i class="fas fa-carrot"></i></div>
                         <h6 class="fw-bold text-dark">Nutrition</h6>

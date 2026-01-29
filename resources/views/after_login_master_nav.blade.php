@@ -238,9 +238,10 @@
                                     <small class="text-muted">john@example.com</small>
                                 </div>
                             </li>
-                            <li><a class="dropdown-item dropdown-item-custom" href="#"><i class="fas fa-user text-muted"></i> My Profile</a></li>
-                            <li><a class="dropdown-item dropdown-item-custom" href="#"><i class="fas fa-box-open text-muted"></i> My Orders</a></li>
-                            <li><a class="dropdown-item dropdown-item-custom" href="{{ url('/cart') }}"><i class="fas fa-shopping-cart text-muted"></i> My Cart</a></li> <li><a class="dropdown-item dropdown-item-custom" href="#"><i class="fas fa-cog text-muted"></i> Settings</a></li>
+                            <li><a class="dropdown-item dropdown-item-custom" href="{{ url('/profile') }}"><i class="fas fa-user text-muted"></i> My Profile</a></li>
+                            <li><a class="dropdown-item dropdown-item-custom" href="{{ url('/order-history') }}"><i class="fas fa-box-open text-muted"></i> My Orders</a></li>
+                            <li><a class="dropdown-item dropdown-item-custom" href="{{ url('/cart') }}"><i class="fas fa-shopping-cart text-muted"></i> My Cart</a></li>
+                            <li><a class="dropdown-item dropdown-item-custom" href="{{ url('/wishlist') }}"><i class="fas fa-shopping-cart text-muted"></i> My Wishlist</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">

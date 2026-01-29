@@ -191,11 +191,6 @@
         <span class="link-text">Categories</span>
     </a>
 
-    <a href="{{ url('/admin/offers') }}" class="admin-link">
-        <i class="fas fa-tags"></i>
-        <span class="link-text">Offers</span>
-    </a>
-
     <a href="{{ url('/admin/orders') }}" class="admin-link">
         <i class="fas fa-shopping-bag"></i>
         <span class="link-text">Orders</span>
