@@ -1,6 +1,6 @@
 @extends('master_nav')
 
-@section('title', 'About Us - MediSwift')
+@section('title', 'About Us - Medi-Go')
 
 @section('styles')
 <style>
@@ -145,10 +145,10 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6" data-aos="fade-right">
-                    <span class="hero-subtitle">About MediSwift</span>
+                    <span class="hero-subtitle">About Medi-Go</span>
                     <h1 class="display-4 fw-bold mb-4">We are redefining <br><span style="color: var(--primary);">Digital Healthcare.</span></h1>
                     <p class="lead text-secondary mb-4" style="line-height: 1.8;">
-                        MediSwift isn't just a pharmacy; it's a promise. A promise to deliver genuine medicines, expert advice, and compassionate care right to your doorstep, instantly.
+                        Medi-Go isn't just a pharmacy; it's a promise. A promise to deliver genuine medicines, expert advice, and compassionate care right to your doorstep, instantly.
                     </p>
                     
                     <div class="d-flex gap-4 mt-4">
@@ -320,7 +320,7 @@
             
             <div class="position-relative z-1">
                 <h2 class="fw-bold mb-3">Ready to prioritize your health?</h2>
-                <p class="mb-4 text-white-50 w-75 mx-auto">Join over 50,000+ satisfied customers who trust MediSwift for their daily healthcare needs.</p>
+                <p class="mb-4 text-white-50 w-75 mx-auto">Join over 50,000+ satisfied customers who trust Medi-Go for their daily healthcare needs.</p>
                 
                 <a href="{{ url('/') }}" class="btn btn-light rounded-pill px-5 py-3 fw-bold text-primary shadow-lg">
                     Start Shopping Now

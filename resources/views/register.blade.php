@@ -1,6 +1,6 @@
 @extends('master_nav')
 
-@section('title', 'MediSwift - Sign Up')
+@section('title', 'Medi-Go - Sign Up')
 
 @section('styles')
 <style>
@@ -48,6 +48,41 @@
         transform: translateY(-2px);
         box-shadow: 0 10px 20px rgba(5,150,105,0.3);
     }
+        .login-btn {
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        padding: 12px;
+        border-radius: 50px;
+        font-weight: 700;
+        border: none;
+        transition: 0.3s;
+    }
+
+    .login-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(5, 150, 105, 0.3);
+    }
+
+    .login-btn.loading {
+        pointer-events: none;
+        background: #9ca3af;
+    }
+
+    .google-btn {
+        width: 100%;
+        border-radius: 50px;
+        padding: 12px;
+        font-weight: 700;
+        border: 1px solid #ddd;
+        transition: 0.3s;
+    }
+
+    .google-btn:hover {
+        background: #f8fafc;
+    }
+
 </style>
 @endsection
 
@@ -55,7 +90,7 @@
 <section class="register-section">
 <div class="register-card">
 
-    <h3 class="register-title text-center">Create Your MediSwift Account</h3>
+    <h3 class="register-title text-center">Create Your Medi-Go Account</h3>
     <p class="text-muted text-center mb-4">Fast, secure & trusted medicine delivery</p>
 
     {{-- Validation Errors --}}
@@ -112,6 +147,10 @@
         Already have an account?
         <a href="{{ route('login') }}" class="fw-bold text-success text-decoration-none">Login</a>
     </p>
+    <button class="google-btn">
+            <i class="fab fa-google me-2 text-danger"></i> Login with Google
+        </button>
+
 
 </div>
 </section>
