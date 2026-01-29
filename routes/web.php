@@ -46,7 +46,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/admin/dashboard', function () {
     return view('admin.Admin_dashboard');
 });
-<<<<<<< .mine
 
 Route::get('/admin/users', function () {
     return view('admin.admin_User');
@@ -88,9 +87,6 @@ Route::get('/admin/profile', function () {
     return view('admin.admin_profile');
 });
 
-=======
-
-
 
 //=========================================================================
 //====================this is after login user's routes====================
@@ -107,27 +103,3 @@ Route::get('/About', function () {
 Route::get('/contact', function () {
     return view('after_login_contact_use');
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> .theirs
