@@ -11,6 +11,22 @@ Route::get('/about', function () {
     return view('about_us');
 });
 
+Route::get('/medicines', function () {
+    return view('medicines');
+});
+
+Route::get('/baby_care', function () {
+    return view('baby_care');
+});
+
+Route::get('/nutration', function () {
+    return view('nutration');
+});
+
+Route::get('/devices', function () {
+    return view('devices');
+});
+
 // Login
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -30,6 +46,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/admin/dashboard', function () {
     return view('admin.Admin_dashboard');
 });
+<<<<<<< .mine
 
 Route::get('/admin/users', function () {
     return view('admin.admin_User');
@@ -71,3 +88,46 @@ Route::get('/admin/profile', function () {
     return view('admin.admin_profile');
 });
 
+=======
+
+
+
+//=========================================================================
+//====================this is after login user's routes====================
+
+
+Route::get('/home', function () {
+    return view('after_login_home_page');
+});
+
+Route::get('/About', function () {
+    return view('after_login_about_us');
+});
+
+Route::get('/contact', function () {
+    return view('after_login_contact_use');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> .theirs

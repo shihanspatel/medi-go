@@ -1,8 +1,9 @@
-@extends('master_nav')
+@extends('after_login_master_nav')
 
-@section('title', 'Medi-Go - Home')
+@section('title', 'Medicines - Browse All')
 
 @section('styles')
+
 <style>
     /* Hero */
     .hero-section {
@@ -130,6 +131,7 @@
         color: white;
     }
 </style>
+
 @endsection
 
 @section('content')
