@@ -1,4 +1,4 @@
-@extends('after_login_master_nav')
+@extends('master_nav')
 
 @section('title', 'Medi-Go - Contact Support')
 

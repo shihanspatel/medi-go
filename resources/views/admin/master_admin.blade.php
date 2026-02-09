@@ -194,11 +194,73 @@
     <!-- Mobile Overlay -->
     <div class="mobile-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Sidebar -->
-    <div class="admin-sidebar" id="sidebar">
-        <div class="admin-logo">
-            <i class="fas fa-plus-circle"></i>
-            <span class="link-text"> MediGo</span>
+    <!-- Sidebar <<<<<<< HEAD
+        <a href="{{ url('/admin/dashboard') }}" class="admin-link active">
+            <i class="fas fa-home"></i>
+            <span class="link-text">Dashboard</span>
+=======
+    <a href="{{ url('/admin/dashboard') }}" class="admin-link active">
+        <i class="fas fa-home"></i>
+        <span class="link-text">Dashboard</span>
+    </a>
+
+    <a href="{{ url('/admin/users') }}" class="admin-link">
+        <i class="fas fa-users"></i>
+        <span class="link-text">Users</span>
+    </a>
+
+    <a href="{{ url('/admin/products') }}" class="admin-link">
+        <i class="fas fa-pills"></i>
+        <span class="link-text">Products</span>
+    </a>
+
+    <a href="{{ url('/admin/categories') }}" class="admin-link">
+        <i class="fas fa-layer-group"></i>
+        <span class="link-text">Categories</span>
+    </a>
+
+    <a href="{{ url('/admin/orders') }}" class="admin-link">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="link-text">Orders</span>
+    </a>
+
+    <a href="{{ url('/admin/ratings') }}" class="admin-link">
+        <i class="fas fa-star"></i>
+        <span class="link-text">Ratings</span>
+    </a>
+
+    <a href="{{ url('/admin/contact') }}" class="admin-link">
+        <i class="fas fa-headset"></i>
+        <span class="link-text">Contact Us</span>
+    </a>
+
+    <hr>
+
+    <a href="{{ route('logout') }}" class="admin-link text-danger"
+       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <i class="fas fa-sign-out-alt"></i>
+        <span class="link-text">Logout</span>
+    </a>
+
+    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        @csrf
+    </form>
+</div>
+
+<!-- Topbar -->
+<div class="admin-topbar" id="topbar">
+    <div class="d-flex align-items-center gap-3">
+        <i class="fas fa-bars toggle-btn" onclick="toggleSidebar()"></i>
+        <h5 class="mb-0 fw-bold">@yield('page-title','Dashboard')</h5>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <!-- Wishlist -->
+        <a href="{{ url('/admin/wishlist') }}" class="icon-btn" title="Wishlist">
+            <i class="fas fa-heart"></i>
+            <span class="badge-dot"></span>
+>>>>>>> 712115d391afd1c5f911bc95231b347cbc61343b
+> MediGo</span>
         </div>
 
         <a href="{{ url('/admin/dashboard') }}" class="admin-link active">
