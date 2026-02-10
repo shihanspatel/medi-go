@@ -2,14 +2,22 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\guest;
+use App\Http\Controllers\AboutController;
+# ================= CATEGORY ROUTES =================
+Route::get('/category/{slug}', [guest::class, 'show'])->name('category.show');
+Route::post('/categories/store', [guest::class, 'store'])->name('categories.store');
 
-Route::get('/', function () {
-    return view('home');
-});
+# ================= PRODUCT ROUTES =================
+Route::post('/products/store', [guest::class, 'store'])->name('products.store');
 
-Route::get('/about', function () {
-    return view('about_us');
-});
+# (Optional) Product Details Page
+Route::get('/product/{id}', [guest::class, 'show'])->name('product.show');
+
+Route::get('/', [guest::class, 'index'])->name('home.index');
+
+Route::get('/about', [AboutController::class, 'index'])->name('about');
+
 
 Route::get('/medicines', function () {
     return view('medicines');
