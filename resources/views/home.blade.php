@@ -172,19 +172,30 @@
         <div class="row g-4">
             @foreach($categories as $category)
             <div class="col-6 col-md-3" data-aos="zoom-in">
-                <a href="{{ url('/category/'.$category->slug) }}" class="text-decoration-none">
+
+                <a href="{{ route('category.products', $category->slug) }}" class="text-decoration-none">
+
                     <div class="category-card">
+
                         <div class="cat-icon-box">
                             <i class="fas {{ $category->icon }}"></i>
                         </div>
-                        <h6 class="fw-bold text-dark">{{ $category->name }}</h6>
+
+                        <h6 class="fw-bold text-dark">
+                            {{ $category->name }}
+                        </h6>
+
                     </div>
+
                 </a>
+
             </div>
             @endforeach
         </div>
+
     </div>
 </section>
+
 
 {{-- ================= TRENDING PRODUCTS ================= --}}
 <section class="py-5 bg-light">

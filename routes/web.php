@@ -7,6 +7,7 @@ use App\Http\Controllers\AboutController;
 # ================= CATEGORY ROUTES =================
 Route::get('/category/{slug}', [guest::class, 'show'])->name('category.show');
 Route::post('/categories/store', [guest::class, 'store'])->name('categories.store');
+Route::get('/category/{slug}', [guest::class, 'show'])->name('category.products');
 
 # ================= PRODUCT ROUTES =================
 Route::post('/products/store', [guest::class, 'store'])->name('products.store');
@@ -39,9 +40,8 @@ Route::get('/view_product_', function () {
     return view('before_login_prodct');
 });
 
-Route::get('contact-us',function(){
-    return view('contact_us');
-});
+Route::get('/contact-us', [guest::class, 'Contact_index'])->name('contact');
+Route::post('/contact-us', [guest::class, 'store'])->name('contact.store');
 
 Route::get('/forgot', function () {
     return view('forgot_password_form');
