@@ -173,7 +173,7 @@
             @foreach($categories as $category)
             <div class="col-6 col-md-3" data-aos="zoom-in">
 
-                <a href="{{ route('category.products', $category->slug) }}" class="text-decoration-none">
+                <a href="{{ route('category.show', $category->slug) }}" class="text-decoration-none">
 
                     <div class="category-card">
 

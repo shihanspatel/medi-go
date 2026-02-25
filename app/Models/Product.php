@@ -20,4 +20,8 @@ class Product extends Model
         'discount',
         'is_trending'
     ];
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

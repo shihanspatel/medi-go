@@ -219,7 +219,7 @@
 
                 <div class="d-flex align-items-center gap-4">
                     
-                    <a href="{{ url('/About') }}" class="nav-text-link">About Us</a>
+                    <a href="{{ url('/about') }}" class="nav-text-link">About Us</a>
                     <a href="{{ url('/contact') }}" class="nav-text-link">Contact Us</a>
                     <div class="dropdown">
                         <a href="#" class="user-dropdown-toggle" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">

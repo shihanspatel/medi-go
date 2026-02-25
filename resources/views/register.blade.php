@@ -19,12 +19,11 @@
         padding: 40px;
         max-width: 520px;
         width: 100%;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
     }
 
     .register-title {
         font-weight: 800;
-        margin-bottom: 5px;
     }
 
     .register-input {
@@ -46,112 +45,188 @@
     .register-btn:hover {
         background: #047857;
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(5,150,105,0.3);
     }
-        .login-btn {
-        width: 100%;
-        background: var(--primary);
-        color: white;
-        padding: 12px;
-        border-radius: 50px;
-        font-weight: 700;
-        border: none;
-        transition: 0.3s;
-    }
-
-    .login-btn:hover {
-        background: var(--primary-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(5, 150, 105, 0.3);
-    }
-
-    .login-btn.loading {
-        pointer-events: none;
-        background: #9ca3af;
-    }
-
-    .google-btn {
-        width: 100%;
-        border-radius: 50px;
-        padding: 12px;
-        font-weight: 700;
-        border: 1px solid #ddd;
-        transition: 0.3s;
-    }
-
-    .google-btn:hover {
-        background: #f8fafc;
-    }
-
 </style>
 @endsection
 
+
 @section('content')
+
 <section class="register-section">
-<div class="register-card">
 
-    <h3 class="register-title text-center">Create Your Medi-Go Account</h3>
-    <p class="text-muted text-center mb-4">Fast, secure & trusted medicine delivery</p>
+    <div class="register-card">
 
-    {{-- Validation Errors --}}
-    @if ($errors->any())
+        <h3 class="register-title text-center">
+            Create Your Medi-Go Account
+        </h3>
+
+        <p class="text-muted text-center mb-4">
+            Fast, secure & trusted medicine delivery
+        </p>
+
+
+        {{-- SUCCESS MESSAGE --}}
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+
+
+        {{-- VALIDATION ERRORS --}}
+        @if ($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">
                 @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
+                <li>{{ $error }}</li>
                 @endforeach
             </ul>
         </div>
-    @endif
+        @endif
 
-    <form action="{{ route('register') }}" method="POST">
-        @csrf
 
-        <!-- Basic Info -->
-        <input type="text" name="name" class="form-control register-input mb-3" placeholder="Full Name" required>
-        <input type="date" name="Birth Date" class="form-control register-input mb-3" placeholder="Birth Date" required>
-        <input type="email" name="email" class="form-control register-input mb-3" placeholder="Email Address" required>
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <input type="password" name="password" class="form-control register-input" placeholder="Password" required>
+        <form action="{{ route('register.store') }}" method="POST">
+
+            @csrf
+
+
+            {{-- NAME --}}
+            <input type="text"
+                name="name"
+                class="form-control register-input mb-3"
+                placeholder="Full Name"
+                value="{{ old('name') }}"
+                required>
+
+
+
+            {{-- BIRTH DATE --}}
+            <input type="date"
+                name="birth_date"
+                class="form-control register-input mb-3"
+                value="{{ old('birth_date') }}"
+                required>
+
+
+
+            {{-- EMAIL --}}
+            <input type="email"
+                name="email"
+                class="form-control register-input mb-3"
+                placeholder="Email Address"
+                value="{{ old('email') }}"
+                required>
+
+
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <input type="password"
+                        name="password"
+                        class="form-control register-input"
+                        placeholder="Password"
+                        required>
+
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+
+                    <input type="password"
+                        name="password_confirmation"
+                        class="form-control register-input"
+                        placeholder="Confirm Password"
+                        required>
+
+                </div>
+
             </div>
-            <div class="col-md-6 mb-3">
-                <input type="password" name="password_confirmation" class="form-control register-input" placeholder="Confirm Password" required>
+
+
+            <hr>
+
+
+            {{-- ADDRESS --}}
+            <input type="text"
+                name="address"
+                class="form-control register-input mb-3"
+                placeholder="Address"
+                value="{{ old('address') }}"
+                required>
+
+
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <input type="text"
+                        name="city"
+                        class="form-control register-input"
+                        placeholder="City"
+                        value="{{ old('city') }}"
+                        required>
+
+                </div>
+
+
+                <div class="col-md-4 mb-3">
+
+                    <input type="text"
+                        name="state"
+                        class="form-control register-input"
+                        placeholder="State"
+                        value="{{ old('state') }}"
+                        required>
+
+                </div>
+
+
+                <div class="col-md-4 mb-3">
+
+                    <input type="text"
+                        name="pincode"
+                        class="form-control register-input"
+                        placeholder="Pincode"
+                        value="{{ old('pincode') }}"
+                        required>
+
+                </div>
+
             </div>
-        </div>
-
-        <hr>
-
-        <!-- Address Info -->
-        <input type="text" name="address" class="form-control register-input mb-3" placeholder="Address Line" required>
-
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <input type="text" name="city" class="form-control register-input" placeholder="City" required>
-            </div>
-            <div class="col-md-4 mb-3">
-                <input type="text" name="state" class="form-control register-input" placeholder="State" required>
-            </div>
-            <div class="col-md-4 mb-3">
-                <input type="text" name="pincode" class="form-control register-input" placeholder="Pincode" required>
-            </div>
-        </div>
-
-        <button type="submit" class="register-btn mt-2">
-            <i class="fas fa-user-plus me-2"></i> Create Account
-        </button>
-    </form>
-
-    <p class="text-center mt-4">
-        Already have an account?
-        <a href="{{ route('login') }}" class="fw-bold text-success text-decoration-none">Login</a>
-    </p>
-    <button class="google-btn">
-            <i class="fab fa-google me-2 text-danger"></i> Login with Google
-        </button>
 
 
-</div>
+
+            <button type="submit" class="register-btn mt-2">
+
+                <i class="fas fa-user-plus me-2"></i>
+                Create Account
+
+            </button>
+
+
+        </form>
+
+
+
+        <p class="text-center mt-4">
+
+            Already have an account?
+
+            <a href="{{ route('login') }}"
+                class="fw-bold text-success text-decoration-none">
+
+                Login
+
+            </a>
+
+        </p>
+
+    </div>
+
 </section>
+
 @endsection
