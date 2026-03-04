@@ -7,7 +7,8 @@ use App\Http\Controllers\Guest;
 use App\Http\Controllers\orderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\normal_controller;
-
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Mail;
 /*
 |--------------------------------------------------------------------------
 | PUBLIC ROUTES (Accessible to Everyone)
@@ -81,7 +82,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [normal_controller::class, 'Profile_index'])
         ->name('profile');
 
-    Route::post('/profile/update', [normal_controller::class, 'Profile_update'])
+    Route::put('/profile/update', [normal_controller::class, 'Profile_update'])
         ->name('profile.update');
 
     Route::post('/logout', [AuthController::class, 'logout'])
@@ -153,4 +154,30 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::view('/cart', 'admin.Admin_cart');
     Route::view('/wishlist', 'admin.admin_wishlist');
     Route::view('/profile', 'admin.admin_profile');
+});
+
+
+Route::middleware(['auth'])->group(function () {
+
+    // Verification Notice Page
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+
+    // When User Clicks Email Link
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+
+        // This sets email_verified_at
+        $request->fulfill();
+
+        // Activate account
+        $user = $request->user();
+        $user->status = 'active';
+        $user->save();
+
+        return redirect()->route('login')
+            ->with('success', 'Email verified & account activated successfully!');
+
+    })->middleware(['signed'])->name('verification.verify');
+
 });

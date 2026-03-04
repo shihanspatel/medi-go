@@ -4,14 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>@yield('title','Medi-Go')</title>
 
     {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    {{-- Font Awesome --}}
+    {{-- FontAwesome --}}
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
         body {
@@ -20,6 +21,7 @@
             margin: 0;
         }
 
+        /* NAVBAR */
         .master-nav {
             background: white;
             padding: 12px 0;
@@ -27,6 +29,7 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
         }
 
+        /* LOGO */
         .navbar-brand {
             font-weight: 800;
             font-size: 22px;
@@ -37,6 +40,7 @@
             color: #047857 !important;
         }
 
+        /* SEARCH */
         .search-wrapper {
             position: relative;
             max-width: 420px;
@@ -65,6 +69,7 @@
             box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
         }
 
+        /* NAV LINKS */
         .nav-text-link {
             font-weight: 600;
             color: #334155;
@@ -78,6 +83,7 @@
             background: #ecfdf5;
         }
 
+        /* USER AVATAR */
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -85,6 +91,7 @@
             border: 2px solid #e2e8f0;
         }
 
+        /* DROPDOWN */
         .dropdown-menu-custom {
             border: none;
             border-radius: 15px;
@@ -110,35 +117,52 @@
             color: #059669;
         }
 
-        .btn-login {
-            border: 2px solid #059669;
-            color: #059669;
-            padding: 7px 20px;
+        /* LOGIN BUTTONS */
+        .glass-pill {
+            display: flex;
+            overflow: hidden;
             border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .btn-login:hover {
-            background: #059669;
+        .pill-btn {
+            flex: 1;
+            padding: 8px 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
             color: white;
-        }
-
-        .btn-register {
-            background: #059669;
-            color: white;
-            padding: 7px 20px;
-            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-decoration: none;
-            font-weight: 600;
+            transition: all .3s;
         }
 
-        .btn-register:hover {
-            background: #047857;
+        /* LOGIN */
+        .pill-btn.red {
+            background: linear-gradient(135deg, #fca5a5, #ef4444);
+            border-radius: 50px 0 0 50px;
+        }
+
+        .pill-btn.red:hover {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+        }
+
+        /* REGISTER */
+        .pill-btn.blue {
+            background: linear-gradient(135deg, #93c5fd, #3b82f6);
+            border-radius: 0 50px 50px 0;
+        }
+
+        .pill-btn.blue:hover {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
         }
     </style>
 
     @yield('styles')
+
 </head>
 
 <body>
@@ -163,6 +187,7 @@
                 {{-- SEARCH --}}
                 <div class="search-wrapper mx-auto my-3 my-lg-0">
                     <i class="fas fa-search search-icon"></i>
+
                     <input type="text"
                         class="form-control search-input"
                         placeholder="Search medicines...">
@@ -170,13 +195,9 @@
 
                 <div class="d-flex align-items-center gap-3">
 
-                    <a href="{{ url('/about') }}" class="nav-text-link">
-                        About Us
-                    </a>
+                    <a href="{{ url('/about') }}" class="nav-text-link">About Us</a>
 
-                    <a href="{{ url('/contact-us') }}" class="nav-text-link">
-                        Contact Us
-                    </a>
+                    <a href="{{ url('/contact-us') }}" class="nav-text-link">Contact Us</a>
 
                     {{-- AUTH CHECK --}}
                     @auth
@@ -189,7 +210,7 @@
 
                         <a class="d-flex align-items-center gap-2 text-decoration-none"
                             data-bs-toggle="dropdown"
-                            style="cursor:pointer;">
+                            style="cursor:pointer">
 
                             <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=059669&color=fff"
                                 class="user-avatar">
@@ -198,6 +219,7 @@
                                 <small class="text-muted">Hello,</small><br>
                                 <span class="fw-bold">{{ $user->name }}</span>
                             </div>
+
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
@@ -208,8 +230,7 @@
                             </li>
 
                             <li>
-                                <a href="{{ route('profile') }}"
-                                    class="dropdown-item-custom">
+                                <a href="{{ route('profile') }}" class="dropdown-item-custom">
                                     <i class="fas fa-user"></i> My Profile
                                 </a>
                             </li>
@@ -217,24 +238,30 @@
                             <li>
                                 <a href="{{ route('wishlist.index') }}"
                                     class="dropdown-item-custom d-flex justify-content-between align-items-center">
+
                                     <span>
                                         <i class="fas fa-heart text-danger"></i> Wishlist
                                     </span>
+
                                     <span class="badge bg-danger rounded-pill">
-                                        {{ $wishlistCount }}
+                                        {{ $wishlistCount ?? 0 }}
                                     </span>
+
                                 </a>
                             </li>
 
                             <li>
                                 <a href="{{ route('cart.index') }}"
                                     class="dropdown-item-custom d-flex justify-content-between align-items-center">
+
                                     <span>
                                         <i class="fas fa-shopping-cart text-success"></i> Cart
                                     </span>
+
                                     <span class="badge bg-success rounded-pill">
-                                        {{ $cartCount }}
+                                        {{ $cartCount ?? 0 }}
                                     </span>
+
                                 </a>
                             </li>
 
@@ -245,9 +272,12 @@
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
+
                                     <button type="submit"
                                         class="dropdown-item-custom text-danger">
+
                                         <i class="fas fa-sign-out-alt"></i> Logout
+
                                     </button>
                                 </form>
                             </li>
@@ -257,13 +287,17 @@
 
                     @else
 
-                    <a href="{{ route('login') }}" class="btn-login">
-                        Login
-                    </a>
+                    <div class="glass-pill">
 
-                    <a href="{{ route('register') }}" class="btn-register">
-                        Sign Up
-                    </a>
+                        <a href="{{ route('login') }}" class="pill-btn red">
+                            Log In
+                        </a>
+
+                        <a href="{{ route('register') }}" class="pill-btn blue">
+                            Sign Up
+                        </a>
+
+                    </div>
 
                     @endauth
 

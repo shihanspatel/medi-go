@@ -4,6 +4,13 @@
 
 @section('styles')
 <style>
+    :root {
+        --primary: #059669;
+        --primary-dark: #047857;
+    }
+
+    /* REGISTER SECTION */
+
     .register-section {
         min-height: 100vh;
         background: radial-gradient(circle at top right, #d1fae5 0%, #ffffff 50%);
@@ -13,6 +20,8 @@
         padding: 60px 15px;
     }
 
+    /* REGISTER CARD */
+
     .register-card {
         background: white;
         border-radius: 25px;
@@ -20,16 +29,44 @@
         max-width: 520px;
         width: 100%;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        animation: fadeIn .8s ease;
     }
+
+    @keyframes fadeIn {
+
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    }
+
+    /* TITLE */
 
     .register-title {
         font-weight: 800;
+        margin-bottom: 5px;
     }
+
+    /* INPUT */
 
     .register-input {
         border-radius: 12px;
         padding: 12px 15px;
+        transition: .3s;
     }
+
+    .register-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    /* BUTTON */
 
     .register-btn {
         width: 100%;
@@ -39,12 +76,13 @@
         border-radius: 50px;
         font-weight: 700;
         border: none;
-        transition: 0.3s;
+        transition: .3s;
     }
 
     .register-btn:hover {
-        background: #047857;
+        background: var(--primary-dark);
         transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(5, 150, 105, 0.25);
     }
 </style>
 @endsection
@@ -67,21 +105,31 @@
 
         {{-- SUCCESS MESSAGE --}}
         @if(session('success'))
+
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
+
         @endif
 
 
         {{-- VALIDATION ERRORS --}}
         @if ($errors->any())
+
         <div class="alert alert-danger">
+
             <ul class="mb-0">
+
                 @foreach ($errors->all() as $error)
+
                 <li>{{ $error }}</li>
+
                 @endforeach
+
             </ul>
+
         </div>
+
         @endif
 
 
@@ -206,7 +254,6 @@
                 Create Account
 
             </button>
-
 
         </form>
 

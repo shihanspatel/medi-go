@@ -1,15 +1,19 @@
 @extends('master_nav')
 
-@section('title', 'My Profile - Medi-Go')
+@section('title','My Profile - Medi-Go')
 
 @section('styles')
 <style>
-    /* Background */
+    :root {
+        --primary: #059669;
+        --primary-dark: #047857;
+    }
+
     body {
         background: #f8fafc;
     }
 
-    /* Header Background */
+    /* HEADER */
     .profile-header-bg {
         background: linear-gradient(135deg, #059669, #34d399);
         height: 140px;
@@ -17,7 +21,7 @@
         margin-bottom: -70px;
     }
 
-    /* Card */
+    /* CARD */
     .profile-card {
         background: white;
         border-radius: 20px;
@@ -26,7 +30,7 @@
         margin-bottom: 20px;
     }
 
-    /* Avatar */
+    /* AVATAR */
     .avatar-wrapper {
         width: 120px;
         height: 120px;
@@ -41,11 +45,17 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
-    /* Stats */
+    /* STATS */
     .stats-box {
         background: #f1f5f9;
         border-radius: 12px;
         padding: 12px;
+        transition: 0.3s;
+    }
+
+    .stats-box:hover {
+        background: #ecfdf5;
+        transform: translateY(-3px);
     }
 
     .stats-value {
@@ -58,7 +68,7 @@
         color: #64748b;
     }
 
-    /* Form */
+    /* FORM */
     .form-label {
         font-weight: 600;
     }
@@ -67,7 +77,7 @@
         border-radius: 10px;
     }
 
-    /* Button */
+    /* BUTTON */
     .btn-success {
         background: #059669;
         border: none;
@@ -80,8 +90,11 @@
 @endsection
 
 
-
 @section('content')
+
+@php
+$user = auth()->user();
+@endphp
 
 <div class="profile-header-bg"></div>
 
@@ -103,36 +116,33 @@
 
                 </div>
 
-
                 <h4 class="fw-bold mt-3">
                     {{ $user->name }}
                 </h4>
 
-
                 <p class="text-muted">
-                    Member since {{ date('M Y', strtotime($user->created_at)) }}
+                    Member since {{ $user->created_at->format('M Y') }}
                 </p>
-
 
                 <div class="row mt-3">
 
                     <div class="col-4">
                         <div class="stats-box">
-                            <div class="stats-value">0</div>
+                            <div class="stats-value">{{ $ordersCount ?? 0 }}</div>
                             <div class="stats-label">Orders</div>
                         </div>
                     </div>
 
                     <div class="col-4">
                         <div class="stats-box">
-                            <div class="stats-value">0</div>
+                            <div class="stats-value">{{ $wishlistCount ?? 0 }}</div>
                             <div class="stats-label">Wishlist</div>
                         </div>
                     </div>
 
                     <div class="col-4">
                         <div class="stats-box">
-                            <div class="stats-value">0</div>
+                            <div class="stats-value">{{ $reviewsCount ?? 0 }}</div>
                             <div class="stats-label">Reviews</div>
                         </div>
                     </div>
@@ -142,18 +152,13 @@
             </div>
 
 
-
             <div class="profile-card">
 
                 <form action="{{ route('logout') }}" method="POST">
-
                     @csrf
 
-                    <button type="submit"
-                        class="btn btn-danger w-100">
-
+                    <button type="submit" class="btn btn-danger w-100">
                         Logout
-
                     </button>
 
                 </form>
@@ -175,7 +180,6 @@
                         Personal Information
                     </h5>
 
-
                     <button class="btn btn-success"
                         data-bs-toggle="modal"
                         data-bs-target="#editModal">
@@ -187,14 +191,11 @@
                 </div>
 
 
-
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
 
-                        <label class="form-label">
-                            Full Name
-                        </label>
+                        <label class="form-label">Full Name</label>
 
                         <input type="text"
                             value="{{ $user->name }}"
@@ -206,9 +207,7 @@
 
                     <div class="col-md-6 mb-3">
 
-                        <label class="form-label">
-                            Email
-                        </label>
+                        <label class="form-label">Email</label>
 
                         <input type="email"
                             value="{{ $user->email }}"
@@ -220,12 +219,10 @@
 
                     <div class="col-md-6 mb-3">
 
-                        <label class="form-label">
-                            City
-                        </label>
+                        <label class="form-label">City</label>
 
                         <input type="text"
-                            value="{{ $user->city }}"
+                            value="{{ $user->city ?? 'Not added' }}"
                             class="form-control"
                             readonly>
 
@@ -234,12 +231,10 @@
 
                     <div class="col-md-6 mb-3">
 
-                        <label class="form-label">
-                            State
-                        </label>
+                        <label class="form-label">State</label>
 
                         <input type="text"
-                            value="{{ $user->state }}"
+                            value="{{ $user->state ?? 'Not added' }}"
                             class="form-control"
                             readonly>
 
@@ -248,12 +243,10 @@
 
                     <div class="col-md-6 mb-3">
 
-                        <label class="form-label">
-                            Pincode
-                        </label>
+                        <label class="form-label">Pincode</label>
 
                         <input type="text"
-                            value="{{ $user->pincode }}"
+                            value="{{ $user->pincode ?? 'Not added' }}"
                             class="form-control"
                             readonly>
 
@@ -262,12 +255,10 @@
 
                     <div class="col-12 mb-3">
 
-                        <label class="form-label">
-                            Address
-                        </label>
+                        <label class="form-label">Address</label>
 
                         <input type="text"
-                            value="{{ $user->address }}"
+                            value="{{ $user->address ?? 'Not added' }}"
                             class="form-control"
                             readonly>
 
@@ -285,9 +276,8 @@
 
 
 
-{{-- EDIT MODAL --}}
-<div class="modal fade"
-    id="editModal">
+{{-- EDIT PROFILE MODAL --}}
+<div class="modal fade" id="editModal">
 
     <div class="modal-dialog">
 
@@ -298,20 +288,17 @@
                 <h5>Edit Profile</h5>
 
                 <button class="btn-close"
-                    data-bs-dismiss="modal">
-                </button>
+                    data-bs-dismiss="modal"></button>
 
             </div>
 
 
-
             <div class="modal-body">
 
-                <form action="{{ route('profile.update') }}"
-                    method="POST">
+                <form action="{{ route('profile.update') }}" method="POST">
 
                     @csrf
-
+                    @method('PUT')
 
                     <input type="text"
                         name="name"
@@ -319,13 +306,11 @@
                         class="form-control mb-3"
                         placeholder="Name">
 
-
                     <input type="text"
                         name="address"
                         value="{{ $user->address }}"
                         class="form-control mb-3"
                         placeholder="Address">
-
 
                     <input type="text"
                         name="city"
@@ -333,13 +318,11 @@
                         class="form-control mb-3"
                         placeholder="City">
 
-
                     <input type="text"
                         name="state"
                         value="{{ $user->state }}"
                         class="form-control mb-3"
                         placeholder="State">
-
 
                     <input type="text"
                         name="pincode"
@@ -347,11 +330,9 @@
                         class="form-control mb-3"
                         placeholder="Pincode">
 
-
                     <button class="btn btn-success w-100">
                         Update Profile
                     </button>
-
 
                 </form>
 

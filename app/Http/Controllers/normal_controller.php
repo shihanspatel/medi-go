@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Register;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\URL;
 
 class normal_controller extends Controller
 {
@@ -22,12 +25,12 @@ class normal_controller extends Controller
         $request->validate([
             'name' => 'required',
             'birth_date' => 'required|date',
-            'email' => 'required|email|unique:register,email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
             'address' => 'required',
             'city' => 'required',
             'state' => 'required',
-            'pincode' => 'required'
+            'pincode' => 'required',
         ]);
 
         $user = Register::create([
@@ -38,16 +41,27 @@ class normal_controller extends Controller
             'address' => $request->address,
             'city' => $request->city,
             'state' => $request->state,
-            'pincode' => $request->pincode
+            'pincode' => $request->pincode,
+            'status' => 'inactive'
         ]);
 
-        // Auto login after register (optional)
-        Auth::login($user);
+        event(new Registered($user));
 
-        return redirect()->route('home')
-            ->with('success', 'Account created successfully');
+        return redirect()->route('login')
+            ->with('success', 'Verification email sent. Please check your email.');
     }
 
+    public function toMail($notifiable)
+    {
+        $verificationUrl = $this->verificationUrl($notifiable);
+
+        return (new MailMessage)
+            ->subject('Verify Your Medi-Go Account')
+            ->view('emails.Email_user', [
+                'name' => $notifiable->name,
+                'actionUrl' => $verificationUrl,
+            ]);
+    }
 
     // ================= LOGIN =================
 
@@ -56,25 +70,40 @@ class normal_controller extends Controller
         return view('login');
     }
 
-    public function login_check(Request $request)
+
+
+    public function login_Check(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
-        if (Auth::attempt([
-            'email' => $request->email,
-            'password' => $request->password
-        ])) {
+        $credentials = $request->only('email', 'password');
 
-            $request->session()->regenerate();
+        if (Auth::attempt($credentials)) {
 
-            return redirect()->route('home')
-                ->with('success', 'Login successful');
+            if (!Auth::user()->email_verified_at) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Please verify your email first.'
+                ]);
+            }
+
+            // Check Account Status
+            if (Auth::user()->status != 'active') {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Your account is inactive.'
+                ]);
+            }
+
+            return redirect()->route('home.index');
         }
 
-        return back()->with('error', 'Invalid email or password');
+        return back()->withErrors([
+            'email' => 'Invalid credentials'
+        ]);
     }
 
 
