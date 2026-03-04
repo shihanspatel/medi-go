@@ -127,7 +127,7 @@
 
         .pill-btn {
             flex: 1;
-            padding: 8px 20px;
+            padding: 4px 20px;
             font-weight: 700;
             font-size: 0.85rem;
             color: white;
@@ -216,7 +216,7 @@
                             data-bs-toggle="dropdown"
                             style="cursor:pointer">
 
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=059669&color=fff"
+                            <img src="{{ $user->user_image ? asset('images/users/' . $user->user_image) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=059669&color=fff' }}"
                                 class="user-avatar">
 
                             <div class="d-none d-lg-block">
@@ -293,7 +293,7 @@
 
                     <div class="glass-pill">
 
-                        <a href="{{ route('login') }}" class="pill-btn red">
+                        <a href="{{ route('login') }}" class="pill-btn red ">
                             Log In
                         </a>
 

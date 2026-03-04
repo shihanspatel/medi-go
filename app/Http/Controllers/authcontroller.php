@@ -57,4 +57,32 @@ class AuthController extends Controller
         Auth::logout();
         return redirect()->route('login')->with('success','Logged out successfully');
     }
+
+    // Upload Profile Photo
+    public function uploadPhoto(Request $request)
+    {
+        $request->validate([
+            'user_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $user = Auth::user();
+        
+        if ($request->hasFile('user_image')) {
+            // Delete old image if exists
+            if ($user->user_image && file_exists(public_path('images/users/' . $user->user_image))) {
+                unlink(public_path('images/users/' . $user->user_image));
+            }
+            
+            // Store new image
+            $image = $request->file('user_image');
+            $imageName = time() . '_' . $user->id . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/users'), $imageName);
+            
+            // Update user record
+            $user->user_image = $imageName;
+            $user->save();
+        }
+
+        return redirect()->back()->with('success', 'Profile photo updated successfully');
+    }
 }

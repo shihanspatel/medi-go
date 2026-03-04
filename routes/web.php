@@ -85,6 +85,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile/update', [normal_controller::class, 'Profile_update'])
         ->name('profile.update');
 
+    Route::post('/profile/upload-photo', [AuthController::class, 'uploadPhoto'])
+        ->name('profile.upload-photo');
+
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
 
