@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Mail;
 */
 
 Route::get('/', [Guest::class, 'index'])->name('home.index');
-
+Route::get('/products/search', [guest::class, 'search'])->name('products.search');
 Route::get('/category/{slug}', [Guest::class, 'show'])
     ->name('category.show');
 

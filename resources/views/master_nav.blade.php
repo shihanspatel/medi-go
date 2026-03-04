@@ -185,13 +185,17 @@
             <div class="collapse navbar-collapse" id="navContent">
 
                 {{-- SEARCH --}}
-                <div class="search-wrapper mx-auto my-3 my-lg-0">
+                <form action="{{ route('products.search') }}" method="GET" class="search-wrapper mx-auto my-3 my-lg-0">
+
                     <i class="fas fa-search search-icon"></i>
 
                     <input type="text"
+                        name="search"
                         class="form-control search-input"
-                        placeholder="Search medicines...">
-                </div>
+                        placeholder="Search medicines..."
+                        value="{{ request('search') }}">
+
+                </form>
 
                 <div class="d-flex align-items-center gap-3">
 

@@ -82,4 +82,13 @@ class Guest extends Controller
 
         return back()->with('success', 'Message sent successfully!');
     }
+    public function search(Request $request)
+    {
+        $search = $request->search;
+
+        $products = Product::where('name', 'LIKE', "%$search%")
+            ->get();
+
+        return view('search_results', compact('products', 'search'));
+    }
 }
