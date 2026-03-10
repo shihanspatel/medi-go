@@ -240,6 +240,12 @@
                             </li>
 
                             <li>
+                                <a href="{{ route('orders.index') }}" class="dropdown-item-custom">
+                                    <i class="fas fa-box"></i> My Orders
+                                </a>
+                            </li>
+
+                            <li>
                                 <a href="{{ route('wishlist.index') }}"
                                     class="dropdown-item-custom d-flex justify-content-between align-items-center">
 

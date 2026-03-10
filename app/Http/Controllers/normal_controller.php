@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\URL;
+use Coderflex\LaravelTurnstile\Rules\TurnstileCheck;
 
 class normal_controller extends Controller
 {
@@ -31,6 +32,7 @@ class normal_controller extends Controller
             'city' => 'required',
             'state' => 'required',
             'pincode' => 'required',
+            'cf-turnstile-response' => ['required', new TurnstileCheck()],
         ]);
 
         $user = Register::create([
@@ -76,7 +78,8 @@ class normal_controller extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
+            'cf-turnstile-response' => ['required', new TurnstileCheck()],
         ]);
 
         $credentials = $request->only('email', 'password');

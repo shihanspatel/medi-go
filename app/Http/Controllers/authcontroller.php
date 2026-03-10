@@ -22,11 +22,11 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($request->only('email','password'))) {
+        if (Auth::attempt($request->only('email', 'password'))) {
             return redirect()->route('dashboard');
         }
 
-        return back()->with('error','Invalid email or password');
+        return back()->with('error', 'Invalid email or password');
     }
 
     public function showRegister()
@@ -48,14 +48,14 @@ class AuthController extends Controller
             'password' => bcrypt($request->password)
         ]);
 
-        return redirect()->route('login')->with('success','Account created successfully');
+        return redirect()->route('login')->with('success', 'Account created successfully');
     }
 
     // Logout
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('login')->with('success','Logged out successfully');
+        return redirect()->route('login')->with('success', 'Logged out successfully');
     }
 
     // Upload Profile Photo
@@ -66,18 +66,18 @@ class AuthController extends Controller
         ]);
 
         $user = Auth::user();
-        
+
         if ($request->hasFile('user_image')) {
             // Delete old image if exists
             if ($user->user_image && file_exists(public_path('images/users/' . $user->user_image))) {
                 unlink(public_path('images/users/' . $user->user_image));
             }
-            
+
             // Store new image
             $image = $request->file('user_image');
             $imageName = time() . '_' . $user->id . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images/users'), $imageName);
-            
+
             // Update user record
             $user->user_image = $imageName;
             $user->save();

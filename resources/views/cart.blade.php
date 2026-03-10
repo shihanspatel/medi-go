@@ -255,13 +255,10 @@
                 </div>
 
                 {{-- Checkout --}}
-                <form action="{{ route('checkout') }}" method="POST">
-                    @csrf
-                    <button class="btn btn-success w-100 rounded-pill py-3 fw-bold mt-4 shadow-lg">
-                        Proceed to Checkout
-                        <i class="fas fa-arrow-right ms-2"></i>
-                    </button>
-                </form>
+                <button id="checkout-btn" class="btn btn-success w-100 rounded-pill py-3 fw-bold mt-4 shadow-lg">
+                    Proceed to Checkout
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </button>
 
                 <div class="text-center mt-3">
                     <small class="text-muted">
@@ -275,5 +272,86 @@
 
     </div>
 </div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<script>
+    function fireConfetti() {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { x: 0, y: 0.6 }
+        });
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { x: 1, y: 0.6 }
+        });
+    }
+
+    document.getElementById('checkout-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        fetch('{{ route("checkout") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var options = {
+                    "key": data.key,
+                    "amount": data.amount,
+                    "currency": "INR",
+                    "name": "Medi-Go",
+                    "order_id": data.razorpay_order_id,
+                    "handler": function(response) {
+                        fetch('{{ route("payment.verify") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(result => {
+                            if (result.success) {
+                                fireConfetti();
+                                setTimeout(() => {
+                                    window.location.href = '{{ route("orders.index") }}';
+                                }, 1500);
+                            } else {
+                                alert('Payment verification failed');
+                            }
+                        });
+                    },
+                    "prefill": {
+                        "name": "{{ auth()->user()->name }}",
+                        "email": "{{ auth()->user()->email }}"
+                    },
+                    "theme": {
+                        "color": "#059669"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+            } else {
+                alert('Error creating order');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong');
+        });
+    });
+</script>
 
 @endsection

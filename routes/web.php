@@ -6,6 +6,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Guest;
 use App\Http\Controllers\orderController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\normal_controller;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Mail;
@@ -128,6 +129,20 @@ Route::middleware('auth')->group(function () {
         [OrderController::class, 'checkout']
     )
         ->name('checkout')
+        ->middleware('auth');
+
+    Route::get(
+        '/payment/checkout/{order_id}',
+        [PaymentController::class, 'checkout']
+    )
+        ->name('payment.checkout')
+        ->middleware('auth');
+
+    Route::post(
+        '/payment/verify',
+        [PaymentController::class, 'verify']
+    )
+        ->name('payment.verify')
         ->middleware('auth');
 
     Route::get(

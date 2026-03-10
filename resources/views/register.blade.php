@@ -246,7 +246,14 @@
 
             </div>
 
-
+            <div class="d-flex justify-content-center my-3">
+                <x-turnstile-widget
+                    theme="dark"
+                    language="en-US"
+                    size="normal"
+                    callback="callbackFunction"
+                    errorCallback="errorCallbackFunction" />
+            </div>
 
             <button type="submit" class="register-btn mt-2">
 

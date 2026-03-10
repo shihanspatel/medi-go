@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
 use Illuminate\Support\Facades\DB;
+use Razorpay\Api\Api;
 
 class OrderController extends Controller
 {
@@ -32,7 +33,8 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'total_amount' => $total,
-                'status' => 'Pending'
+                'status' => 'Pending',
+                'payment_status' => 'pending'
             ]);
 
             foreach ($cartItems as $item) {
@@ -44,18 +46,33 @@ class OrderController extends Controller
                 ]);
             }
 
-            // Clear Cart
-            Cart::where('user_id', auth()->id())->delete();
-
             DB::commit();
 
-            return redirect()->route('orders.index')
-                ->with('success','Order placed successfully');
+            // Create Razorpay order
+            $api = new Api(env('RAZORPAY_KEY_ID'), env('RAZORPAY_KEY_SECRET'));
+            $razorpayOrder = $api->order->create([
+                'amount' => $order->total_amount * 100,
+                'currency' => 'INR',
+                'receipt' => 'order_' . $order->id,
+            ]);
+
+            $order->update([
+                'razorpay_order_id' => $razorpayOrder['id'],
+                'payment_status' => 'initiated'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'razorpay_order_id' => $razorpayOrder['id'],
+                'order_id' => $order->id,
+                'amount' => $order->total_amount * 100,
+                'key' => env('RAZORPAY_KEY_ID')
+            ]);
 
         } catch (\Exception $e) {
 
             DB::rollBack();
-            return back()->with('error','Something went wrong');
+            return response()->json(['success' => false, 'message' => 'Something went wrong'], 500);
         }
     }
 
