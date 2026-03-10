@@ -18,10 +18,28 @@ class Product extends Model
         'price',
         'old_price',
         'discount',
-        'is_trending'
+        'is_trending',
+        'description',
+        'ingredients'
     ];
+
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->ratings()->avg('rating') ?? 0;
+    }
+
+    public function ratingCount()
+    {
+        return $this->ratings()->count();
     }
 }

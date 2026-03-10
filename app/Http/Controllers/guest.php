@@ -8,20 +8,14 @@ use App\Models\Product;
 use App\Models\Banner;
 use App\Models\ContactUs;
 use App\Models\ContactSetting;
+use App\Models\Rating;
 
 class Guest extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | HOME PAGE
-    |--------------------------------------------------------------------------
-    */
     public function index()
     {
         $banner = Banner::where('status', 1)->first();
-
         $categories = Category::where('status', 1)->get();
-
         $products = Product::where('is_trending', 1)
             ->where('status', 1)
             ->latest()
@@ -31,39 +25,30 @@ class Guest extends Controller
         return view('home', compact('banner', 'categories', 'products'));
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | CATEGORY PRODUCTS PAGE
-    |--------------------------------------------------------------------------
-    */
     public function show($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
-
         $products = Product::where('category', $category->name)->get();
 
         return view('category_products', compact('category', 'products'));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | CONTACT PAGE
-    |--------------------------------------------------------------------------
-    */
+    public function product_show($id)
+    {
+        $product = Product::findOrFail($id);
+        $ratings = Rating::where('product_id', $id)->with('user')->latest()->get();
+        $avgRating = $product->averageRating();
+        $ratingCount = $product->ratingCount();
+
+        return view('view_prod', compact('product', 'ratings', 'avgRating', 'ratingCount'));
+    }
+
     public function contact_index()
     {
         $contact = ContactSetting::where('status', 1)->first();
-
         return view('contact_us', compact('contact'));
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | CONTACT FORM SUBMIT
-    |--------------------------------------------------------------------------
-    */
     public function store(Request $request)
     {
         $request->validate([
@@ -82,12 +67,11 @@ class Guest extends Controller
 
         return back()->with('success', 'Message sent successfully!');
     }
+
     public function search(Request $request)
     {
         $search = $request->search;
-
-        $products = Product::where('name', 'LIKE', "%$search%")
-            ->get();
+        $products = Product::where('name', 'LIKE', "%$search%")->get();
 
         return view('search_results', compact('products', 'search'));
     }

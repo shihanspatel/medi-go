@@ -1,111 +1,102 @@
-@extends('master_nav')
+<!-- @extends('master_nav')
 
 @section('title', $category->name . ' - Medi-Go')
 
 @section('styles')
 <style>
+    .category-hero {
+        background: radial-gradient(circle at top right, #d1fae5, #ffffff);
+        padding: 60px 0;
+    }
 
-/* HERO */
-.category-hero {
-    background: radial-gradient(circle at top right, #d1fae5, #ffffff);
-    padding: 60px 0;
-}
+    .product-card {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid #eef2f7;
+        overflow: hidden;
+        transition: 0.3s ease;
+        height: 100%;
+        position: relative;
+    }
 
-/* PRODUCT CARD */
-.product-card {
-    background: white;
-    border-radius: 20px;
-    border: 1px solid #eef2f7;
-    overflow: hidden;
-    transition: 0.3s ease;
-    height: 100%;
-    position: relative;
-}
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        border-color: var(--primary);
+    }
 
-.product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-    border-color: var(--primary);
-}
+    .prod-img-box {
+        height: 200px;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        cursor: pointer;
+    }
 
-/* IMAGE */
-.prod-img-box {
-    height: 200px;
-    background: #f8fafc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
+    .prod-img {
+        height: 140px;
+        transition: 0.4s;
+    }
 
-.prod-img {
-    height: 140px;
-    transition: 0.4s;
-}
+    .product-card:hover .prod-img {
+        transform: scale(1.1);
+    }
 
-.product-card:hover .prod-img {
-    transform: scale(1.1);
-}
+    .discount-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        font-size: 12px;
+    }
 
-/* DISCOUNT BADGE */
-.discount-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    font-size: 12px;
-}
+    .wishlist-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: white;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        border: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+    }
 
-/* WISHLIST BUTTON */
-.wishlist-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: white;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    border: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
-}
+    .wishlist-btn:hover {
+        background: #fee2e2;
+    }
 
-.wishlist-btn:hover {
-    background: #fee2e2;
-}
+    .wishlist-btn i {
+        color: #ef4444;
+    }
 
-.wishlist-btn i {
-    color: #ef4444;
-}
+    .add-btn {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--primary);
+        background: transparent;
+        color: var(--primary);
+        font-weight: 600;
+        padding: 8px;
+        transition: 0.3s;
+    }
 
-/* ADD BUTTON */
-.add-btn {
-    width: 100%;
-    border-radius: 12px;
-    border: 1px solid var(--primary);
-    background: transparent;
-    color: var(--primary);
-    font-weight: 600;
-    padding: 8px;
-    transition: 0.3s;
-}
+    .add-btn:hover {
+        background: var(--primary);
+        color: white;
+    }
 
-.add-btn:hover {
-    background: var(--primary);
-    color: white;
-}
-
-/* EMPTY */
-.empty-box {
-    padding: 60px;
-    background: white;
-    border-radius: 20px;
-}
-
+    .empty-box {
+        padding: 60px;
+        background: white;
+        border-radius: 20px;
+    }
 </style>
 @endsection
-
 
 @section('content')
 
@@ -119,7 +110,6 @@
     </div>
 </section>
 
-
 {{-- PRODUCTS --}}
 <section class="py-5 bg-light">
 <div class="container">
@@ -132,34 +122,35 @@
 <div class="product-card">
 
     {{-- IMAGE --}}
-    <div class="prod-img-box">
+    <a href="{{ route('product.show', $product->id) }}" class="text-decoration-none">
+        <div class="prod-img-box">
 
-        @if($product->discount)
-        <span class="badge bg-danger discount-badge">
-            {{ $product->discount }}% OFF
-        </span>
-        @endif
+            @if($product->discount)
+            <span class="badge bg-danger discount-badge">
+                {{ $product->discount }}% OFF
+            </span>
+            @endif
 
-        {{-- ❤️ WISHLIST --}}
-        @auth
-        <form action="{{ route('wishlist.add') }}" method="POST">
-            @csrf
-            <input type="hidden" name="product_id" value="{{ $product->id }}">
-            <button type="submit" class="wishlist-btn">
-                <i class="fas fa-heart"></i>
-            </button>
-        </form>
-        @else
-        <a href="{{ route('login') }}" class="wishlist-btn">
+            <img src="{{ asset('uploads/products/'.$product->image) }}"
+                 class="prod-img"
+                 alt="{{ $product->name }}">
+        </div>
+    </a>
+
+    {{-- WISHLIST --}}
+    @auth
+    <form action="{{ route('wishlist.add') }}" method="POST">
+        @csrf
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
+        <button type="submit" class="wishlist-btn">
             <i class="fas fa-heart"></i>
-        </a>
-        @endauth
-
-        <img src="{{ asset('uploads/products/'.$product->image) }}"
-             class="prod-img"
-             alt="{{ $product->name }}">
-    </div>
-
+        </button>
+    </form>
+    @else
+    <a href="{{ route('login') }}" class="wishlist-btn">
+        <i class="fas fa-heart"></i>
+    </a>
+    @endauth
 
     {{-- BODY --}}
     <div class="p-3">
@@ -183,7 +174,6 @@
             </small>
             @endif
         </div>
-
 
         {{-- ADD TO CART --}}
         @auth
@@ -230,4 +220,4 @@
 </div>
 </section>
 
-@endsection
+@endsection -->
