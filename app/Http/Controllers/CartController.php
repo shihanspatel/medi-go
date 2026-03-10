@@ -34,23 +34,29 @@ class CartController extends Controller
             'product_id' => 'required|exists:products,id'
         ]);
 
+        $product = Product::find($request->product_id);
         $cartItem = Cart::where('user_id', auth()->id())
             ->where('product_id', $request->product_id)
             ->first();
 
         if ($cartItem) {
-            // If already exists → increase quantity
             $cartItem->increment('quantity');
+            $message = $product->name . ' quantity updated in cart';
         } else {
-            // If not exists → create new
             Cart::create([
                 'user_id' => auth()->id(),
                 'product_id' => $request->product_id,
                 'quantity' => 1
             ]);
+            $message = $product->name . ' added to cart';
         }
 
-        return back()->with('success', 'Product added to cart successfully');
+        // Remove from wishlist if exists
+        Wishlist::where('user_id', auth()->id())
+            ->where('product_id', $request->product_id)
+            ->delete();
+
+        return back()->with('success', $message);
     }
 
     // 🔄 Update Quantity
@@ -74,12 +80,16 @@ class CartController extends Controller
     // ❌ Remove Item
     public function remove($id)
     {
-        Cart::where('id', $id)
+        $cart = Cart::where('id', $id)
             ->where('user_id', auth()->id())
-            ->delete();
+            ->firstOrFail();
 
-        return back()->with('success', 'Item removed from cart');
+        $productName = $cart->product->name;
+        $cart->delete();
+
+        return back()->with('success', $productName . ' removed from cart');
     }
+
     // Show Wishlist Page
     public function wishlist_index()
     {
@@ -97,6 +107,7 @@ class CartController extends Controller
             'product_id' => 'required|exists:products,id'
         ]);
 
+        $product = Product::find($request->product_id);
         $exists = Wishlist::where('user_id', auth()->id())
             ->where('product_id', $request->product_id)
             ->first();
@@ -106,18 +117,24 @@ class CartController extends Controller
                 'user_id' => auth()->id(),
                 'product_id' => $request->product_id
             ]);
+            $message = $product->name . ' added to wishlist';
+        } else {
+            $message = $product->name . ' is already in wishlist';
         }
 
-        return back()->with('success','Added to wishlist');
+        return back()->with('success', $message);
     }
 
     // Remove From Wishlist
     public function wishlist_remove($id)
     {
-        Wishlist::where('id', $id)
+        $wishlist = Wishlist::where('id', $id)
             ->where('user_id', auth()->id())
-            ->delete();
+            ->firstOrFail();
 
-        return back()->with('success','Removed from wishlist');
+        $productName = $wishlist->product->name;
+        $wishlist->delete();
+
+        return back()->with('success', $productName . ' removed from wishlist');
     }
 }

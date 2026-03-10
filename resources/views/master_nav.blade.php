@@ -322,6 +322,63 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-</body>
+    <script>
+        // Toast Notifications
+        @if(session('success'))
+            showToast('{{ session('success') }}', 'success');
+        @endif
+        @if(session('error'))
+            showToast('{{ session('error') }}', 'error');
+        @endif
 
-</html>
+        function showToast(message, type) {
+            const bgColor = type === 'success' ? '#10b981' : '#ef4444';
+            const icon = type === 'success' ? '✓' : '✕';
+            
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 9999;
+                font-weight: 600;
+                animation: slideIn 0.3s ease-out;
+                max-width: 400px;
+            `;
+            toast.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
