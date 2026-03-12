@@ -11,6 +11,11 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\normal_controller;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\GoogleController;
+
+
+Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
 
 Route::get('/', [Guest::class, 'index'])->name('home.index');
 Route::get('/products/search', [guest::class, 'search'])->name('products.search');

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\URL;
 use Coderflex\LaravelTurnstile\Rules\TurnstileCheck;
+use Laravel\Socialite\Facades\Socialite;
 
 class normal_controller extends Controller
 {
@@ -157,5 +158,52 @@ class normal_controller extends Controller
         ]);
 
         return back()->with('success', 'Profile updated successfully');
+    }
+
+    // ================= GOOGLE LOGIN =================
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $user = Socialite::driver('google')->user();
+        } catch (\Exception $e) {
+            return redirect()->route('login')->with('error', 'Failed to login with Google');
+        }
+
+        $authUser = Register::where('email', $user->getEmail())->first();
+
+        if ($authUser) {
+            Auth::login($authUser, true);
+            return redirect()->route('home.index');
+        } else {
+            $newUser = Register::create([
+                'name' => $user->getName(),
+                'email' => $user->getEmail(),
+                'password' => Hash::make(uniqid()),
+                'user_image' => $this->downloadGoogleAvatar($user->getAvatar()),
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]);
+
+            Auth::login($newUser, true);
+            return redirect()->route('home.index')->with('success', 'Welcome! Account created with Google');
+        }
+    }
+
+    private function downloadGoogleAvatar($avatarUrl)
+    {
+        try {
+            $contents = file_get_contents($avatarUrl);
+            $filename = 'google_' . time() . '_' . uniqid() . '.jpg';
+            file_put_contents(public_path('images/users/' . $filename), $contents);
+            return $filename;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

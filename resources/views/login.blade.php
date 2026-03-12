@@ -254,11 +254,11 @@
         </form>
 
 
-        <button class="google-btn">
-
-            <i class="fab fa-google me-2 text-danger"></i>
-            Login with Google
-
+        <button class="google-btn" type="button">
+            <a href="{{ route('auth.google') }}" style="text-decoration: none; color:black;">
+                <i class="fab fa-google me-2 text-danger"></i>
+                Login with Google
+            </a>
         </button>
 
     </div>
