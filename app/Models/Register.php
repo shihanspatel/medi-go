@@ -33,6 +33,7 @@ class Register extends Authenticatable implements MustVerifyEmail
         'state',
         'pincode',
         'status',
+        'role',
     ];
 
     /*

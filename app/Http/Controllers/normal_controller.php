@@ -102,6 +102,11 @@ class normal_controller extends Controller
                 ]);
             }
 
+            // Redirect based on role
+            if (Auth::user()->role === 'admin') {
+                return redirect('/admin/dashboard');
+            }
+
             return redirect()->route('home.index');
         }
 

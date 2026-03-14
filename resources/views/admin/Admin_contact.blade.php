@@ -1,93 +1,63 @@
 @extends('admin.master_admin')
 
-@section('title','Contact Us')
+@section('title','Contact Messages')
 @section('page-title','Contact Us')
 
 @section('content')
 
-<div class="card border-0 shadow-sm rounded-4 p-4">
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+@endif
 
-    <!-- Header -->
+<div class="card border-0 shadow-sm rounded-4 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0">All Contact Messages</h5>
     </div>
 
-    <!-- Filters -->
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <input type="text" class="form-control rounded-pill" placeholder="Search by name or email...">
-        </div>
-        <div class="col-md-6">
-            <select class="form-control rounded-pill">
-                <option>All Status</option>
-                <option>New</option>
-                <option>Replied</option>
-                <option>Closed</option>
-            </select>
-        </div>
+    <div class="mb-3">
+        <input type="text" id="contactSearch" class="form-control rounded-pill" placeholder="Search by name or email...">
     </div>
 
-    <!-- Contact Table -->
     <div class="table-responsive">
-        <table class="table align-middle table-hover">
+        <table class="table align-middle table-hover" id="contactTable">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Subject</th>
-                    <th>Status</th>
+                    <th>Phone</th>
+                    <th>Message</th>
                     <th>Date</th>
                     <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Demo static row -->
+                @forelse($messages as $i => $msg)
                 <tr>
-                    <td>1</td>
-                    <td>Priyal</td>
-                    <td>priyal@gmail.com</td>
-                    <td>Order not delivered</td>
-                    <td><span class="badge bg-warning">New</span></td>
-                    <td>12-02-2024</td>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $msg->first_name }} {{ $msg->last_name }}</td>
+                    <td>{{ $msg->email }}</td>
+                    <td>{{ $msg->phone ?? '-' }}</td>
+                    <td>{{ Str::limit($msg->message, 50) }}</td>
+                    <td>{{ $msg->created_at->format('d-m-Y') }}</td>
                     <td class="text-end">
                         <button class="btn btn-sm btn-primary"
-                            onclick="viewMessage('Priyal','priyal@gmail.com','Order not delivered','My order is still pending.','New','12-02-2024')">
+                            onclick="viewMessage('{{ addslashes($msg->first_name . ' ' . $msg->last_name) }}','{{ $msg->email }}','{{ $msg->phone }}','{{ addslashes($msg->message) }}','{{ $msg->created_at->format('d-m-Y') }}')">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-success"
-                            onclick="updateMessageStatus('Replied')">
-                            <i class="fas fa-reply"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger"
-                            onclick="updateMessageStatus('Closed')">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <form action="{{ route('admin.contact.delete', $msg->id) }}" method="POST" class="d-inline"
+                            onsubmit="return confirm('Delete this message?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                        </form>
                     </td>
                 </tr>
-
-                <tr>
-                    <td>2</td>
-                    <td>Ankit</td>
-                    <td>ankit@gmail.com</td>
-                    <td>Payment issue</td>
-                    <td><span class="badge bg-success">Replied</span></td>
-                    <td>10-02-2024</td>
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-primary"
-                            onclick="viewMessage('Ankit','ankit@gmail.com','Payment issue','Money deducted but order failed.','Replied','10-02-2024')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger"
-                            onclick="updateMessageStatus('Closed')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </td>
-                </tr>
+                @empty
+                <tr><td colspan="7" class="text-center text-muted">No messages found.</td></tr>
+                @endforelse
             </tbody>
         </table>
     </div>
-
 </div>
 
 <!-- VIEW MESSAGE MODAL -->
@@ -101,32 +71,30 @@
       <div class="modal-body">
         <p><b>Name:</b> <span id="v_c_name"></span></p>
         <p><b>Email:</b> <span id="v_c_email"></span></p>
-        <p><b>Subject:</b> <span id="v_c_subject"></span></p>
+        <p><b>Phone:</b> <span id="v_c_phone"></span></p>
         <p><b>Message:</b></p>
-        <div class="border rounded p-3 bg-light">
-            <span id="v_c_message"></span>
-        </div>
-        <p class="mt-2"><b>Status:</b> <span id="v_c_status"></span></p>
-        <p><b>Date:</b> <span id="v_c_date"></span></p>
+        <div class="border rounded p-3 bg-light"><span id="v_c_message"></span></div>
+        <p class="mt-2"><b>Date:</b> <span id="v_c_date"></span></p>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-function viewMessage(name,email,subject,message,status,date){
-    v_c_name.innerText = name;
-    v_c_email.innerText = email;
-    v_c_subject.innerText = subject;
-    v_c_message.innerText = message;
-    v_c_status.innerText = status;
-    v_c_date.innerText = date;
-    new bootstrap.Modal(viewMessageModal).show();
+function viewMessage(name, email, phone, message, date) {
+    document.getElementById('v_c_name').innerText = name;
+    document.getElementById('v_c_email').innerText = email;
+    document.getElementById('v_c_phone').innerText = phone || '-';
+    document.getElementById('v_c_message').innerText = message;
+    document.getElementById('v_c_date').innerText = date;
+    new bootstrap.Modal(document.getElementById('viewMessageModal')).show();
 }
 
-function updateMessageStatus(status){
-    alert("Message status updated to: " + status);
-}
+document.getElementById('contactSearch').addEventListener('keyup', function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#contactTable tbody tr').forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+    });
+});
 </script>
-
 @endsection

@@ -5,41 +5,21 @@
 
 @section('content')
 
-<div class="card border-0 shadow-sm rounded-4 p-4">
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+@endif
 
-    <!-- Header -->
+<div class="card border-0 shadow-sm rounded-4 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0">All Ratings & Reviews</h5>
     </div>
 
-    <!-- Filters -->
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <input type="text" class="form-control rounded-pill" placeholder="Search by user or product...">
-        </div>
-        <div class="col-md-4">
-            <select class="form-control rounded-pill">
-                <option>All Status</option>
-                <option>Approved</option>
-                <option>Pending</option>
-                <option>Rejected</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <select class="form-control rounded-pill">
-                <option>All Ratings</option>
-                <option>5 Stars</option>
-                <option>4 Stars</option>
-                <option>3 Stars</option>
-                <option>2 Stars</option>
-                <option>1 Star</option>
-            </select>
-        </div>
+    <div class="mb-3">
+        <input type="text" id="ratingSearch" class="form-control rounded-pill" placeholder="Search by user or product...">
     </div>
 
-    <!-- Ratings Table -->
     <div class="table-responsive">
-        <table class="table align-middle table-hover">
+        <table class="table align-middle table-hover" id="ratingsTable">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
@@ -47,80 +27,43 @@
                     <th>Product</th>
                     <th>Rating</th>
                     <th>Review</th>
-                    <th>Status</th>
                     <th>Date</th>
                     <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Demo static row -->
+                @forelse($ratings as $i => $rating)
                 <tr>
-                    <td>1</td>
-                    <td>Priyal</td>
-                    <td>Paracetamol 500mg</td>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $rating->user->name ?? 'N/A' }}</td>
+                    <td>{{ $rating->product->name ?? 'N/A' }}</td>
                     <td>
                         <span class="text-warning">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
+                            @for($s = 1; $s <= 5; $s++)
+                                <i class="fa{{ $s <= $rating->rating ? 's' : 'r' }} fa-star"></i>
+                            @endfor
                         </span>
                     </td>
-                    <td>Very effective medicine!</td>
-                    <td><span class="badge bg-success">Approved</span></td>
-                    <td>12-02-2024</td>
+                    <td>{{ Str::limit($rating->review, 50) }}</td>
+                    <td>{{ $rating->created_at->format('d-m-Y') }}</td>
                     <td class="text-end">
                         <button class="btn btn-sm btn-primary"
-                            onclick="viewRating('Priyal','Paracetamol 500mg','4','Very effective medicine!','Approved','12-02-2024')">
+                            onclick="viewRating('{{ addslashes($rating->user->name ?? 'N/A') }}','{{ addslashes($rating->product->name ?? 'N/A') }}','{{ $rating->rating }}','{{ addslashes($rating->review) }}','{{ $rating->created_at->format('d-m-Y') }}')">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-success"
-                            onclick="updateRatingStatus('Approved')">
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger"
-                            onclick="updateRatingStatus('Rejected')">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <form action="{{ route('admin.ratings.delete', $rating->id) }}" method="POST" class="d-inline"
+                            onsubmit="return confirm('Delete this rating?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                        </form>
                     </td>
                 </tr>
-
-                <tr>
-                    <td>2</td>
-                    <td>Ankit</td>
-                    <td>Vitamin C Tablets</td>
-                    <td>
-                        <span class="text-warning">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </span>
-                    </td>
-                    <td>Good but packaging could improve.</td>
-                    <td><span class="badge bg-warning">Pending</span></td>
-                    <td>11-02-2024</td>
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-primary"
-                            onclick="viewRating('Ankit','Vitamin C Tablets','3','Good but packaging could improve.','Pending','11-02-2024')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-success"
-                            onclick="updateRatingStatus('Approved')">
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger"
-                            onclick="updateRatingStatus('Rejected')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </td>
-                </tr>
+                @empty
+                <tr><td colspan="7" class="text-center text-muted">No ratings found.</td></tr>
+                @endforelse
             </tbody>
         </table>
     </div>
-
 </div>
 
 <!-- VIEW RATING MODAL -->
@@ -136,7 +79,6 @@
         <p><b>Product:</b> <span id="v_r_product"></span></p>
         <p><b>Rating:</b> <span id="v_r_rating"></span> Stars</p>
         <p><b>Review:</b> <span id="v_r_review"></span></p>
-        <p><b>Status:</b> <span id="v_r_status"></span></p>
         <p><b>Date:</b> <span id="v_r_date"></span></p>
       </div>
     </div>
@@ -144,19 +86,20 @@
 </div>
 
 <script>
-function viewRating(user,product,rating,review,status,date){
-    v_r_user.innerText = user;
-    v_r_product.innerText = product;
-    v_r_rating.innerText = rating;
-    v_r_review.innerText = review;
-    v_r_status.innerText = status;
-    v_r_date.innerText = date;
-    new bootstrap.Modal(viewRatingModal).show();
+function viewRating(user, product, rating, review, date) {
+    document.getElementById('v_r_user').innerText = user;
+    document.getElementById('v_r_product').innerText = product;
+    document.getElementById('v_r_rating').innerText = rating;
+    document.getElementById('v_r_review').innerText = review;
+    document.getElementById('v_r_date').innerText = date;
+    new bootstrap.Modal(document.getElementById('viewRatingModal')).show();
 }
 
-function updateRatingStatus(status){
-    alert("Rating status updated to: " + status);
-}
+document.getElementById('ratingSearch').addEventListener('keyup', function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#ratingsTable tbody tr').forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+    });
+});
 </script>
-
 @endsection

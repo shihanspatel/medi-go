@@ -5,9 +5,11 @@
 
 @section('content')
 
-<div class="card border-0 shadow-sm rounded-4 p-4">
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+@endif
 
-    <!-- Header -->
+<div class="card border-0 shadow-sm rounded-4 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0">All Products</h5>
         <button class="btn btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#addProductModal">
@@ -15,57 +17,52 @@
         </button>
     </div>
 
-    <!-- Search -->
     <div class="mb-3">
-        <input type="text" class="form-control rounded-pill" placeholder="Search products...">
+        <input type="text" id="productSearch" class="form-control rounded-pill" placeholder="Search products...">
     </div>
 
-    <!-- Products Table -->
     <div class="table-responsive">
-        <table class="table align-middle table-hover">
+        <table class="table align-middle table-hover" id="productsTable">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
                     <th>Product</th>
                     <th>Category</th>
                     <th>Price</th>
-                    <th>Stock</th>
-                    <th>Status</th>
-                    <th class="text-end">Actions</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Demo static row -->
+                @forelse($products as $i => $product)
                 <tr>
-                    <td>1</td>
+                    <td>{{ $i + 1 }}</td>
                     <td>
                         <div class="d-flex align-items-center gap-2">
-                            <img src="https://via.placeholder.com/40" class="rounded">
-                            Paracetamol 500mg
+                            @if($product->image)
+                                <img src="{{ asset('storage/' . $product->image) }}" width="40" class="rounded" onerror="this.src='https://via.placeholder.com/40'">
+                            @endif
+                            {{ $product->name }}
                         </div>
                     </td>
-                    <td>Medicines</td>
-                    <td>₹50</td>
-                    <td><span class="badge bg-success">In Stock</span></td>
-                    <td><span class="badge bg-success">Active</span></td>
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-primary"
-                            onclick="viewProduct('Paracetamol 500mg','Medicines','50','100','Pain relief tablet')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-warning"
-                            onclick="editProduct('Paracetamol 500mg','Medicines','50','100','Pain relief tablet')">
+                    <td>{{ $product->category }}</td>
+                    <td>₹{{ $product->price }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="openEditProduct({{ $product->id }}, '{{ addslashes($product->name) }}', '{{ addslashes($product->category) }}', '{{ $product->price }}', '{{ $product->old_price }}', '{{ addslashes($product->description) }}')">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <form action="{{ route('admin.products.delete', $product->id) }}" method="POST" class="d-inline"
+                            onsubmit="return confirm('Delete this product?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                        </form>
                     </td>
                 </tr>
+                @empty
+                <tr><td colspan="5" class="text-center text-muted">No products found.</td></tr>
+                @endforelse
             </tbody>
         </table>
     </div>
-
 </div>
 
 <!-- ADD PRODUCT MODAL -->
@@ -77,65 +74,40 @@
         <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
             <div class="row g-2">
                 <div class="col-md-6">
                     <label>Product Name</label>
-                    <input class="form-control">
+                    <input name="name" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                     <label>Category</label>
-                    <select class="form-control">
-                        <option>Medicines</option>
-                        <option>Baby Care</option>
-                        <option>Devices</option>
+                    <select name="category" class="form-control" required>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->name }}">{{ $cat->name }}</option>
+                        @endforeach
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label>Price (₹)</label>
-                    <input class="form-control">
+                    <input name="price" type="number" step="0.01" class="form-control" required>
                 </div>
-                <div class="col-md-4">
-                    <label>Stock</label>
-                    <input class="form-control">
-                </div>
-                <div class="col-md-4">
-                    <label>Status</label>
-                    <select class="form-control">
-                        <option>Active</option>
-                        <option>Inactive</option>
-                    </select>
+                <div class="col-md-6">
+                    <label>Old Price (₹)</label>
+                    <input name="old_price" type="number" step="0.01" class="form-control">
                 </div>
                 <div class="col-md-12">
                     <label>Description</label>
-                    <textarea class="form-control"></textarea>
+                    <textarea name="description" class="form-control"></textarea>
                 </div>
                 <div class="col-md-12">
                     <label>Product Image</label>
-                    <input type="file" class="form-control">
+                    <input type="file" name="image" class="form-control">
                 </div>
             </div>
             <button class="btn btn-success w-100 mt-3">Save Product</button>
         </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- VIEW PRODUCT MODAL -->
-<div class="modal fade" id="viewProductModal">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content rounded-4">
-      <div class="modal-header">
-        <h5 class="modal-title">View Product</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p><b>Name:</b> <span id="v_p_name"></span></p>
-        <p><b>Category:</b> <span id="v_p_category"></span></p>
-        <p><b>Price:</b> ₹<span id="v_p_price"></span></p>
-        <p><b>Stock:</b> <span id="v_p_stock"></span></p>
-        <p><b>Description:</b> <span id="v_p_desc"></span></p>
       </div>
     </div>
   </div>
@@ -150,27 +122,36 @@
         <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form id="editProductForm" method="POST" enctype="multipart/form-data">
+            @csrf @method('PUT')
             <div class="row g-2">
                 <div class="col-md-6">
                     <label>Product Name</label>
-                    <input id="e_p_name" class="form-control">
+                    <input id="ep_name" name="name" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                     <label>Category</label>
-                    <input id="e_p_category" class="form-control">
+                    <select id="ep_category" name="category" class="form-control" required>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->name }}">{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label>Price (₹)</label>
-                    <input id="e_p_price" class="form-control">
+                    <input id="ep_price" name="price" type="number" step="0.01" class="form-control" required>
                 </div>
-                <div class="col-md-4">
-                    <label>Stock</label>
-                    <input id="e_p_stock" class="form-control">
+                <div class="col-md-6">
+                    <label>Old Price (₹)</label>
+                    <input id="ep_old_price" name="old_price" type="number" step="0.01" class="form-control">
                 </div>
                 <div class="col-md-12">
                     <label>Description</label>
-                    <textarea id="e_p_desc" class="form-control"></textarea>
+                    <textarea id="ep_desc" name="description" class="form-control"></textarea>
+                </div>
+                <div class="col-md-12">
+                    <label>Product Image</label>
+                    <input type="file" name="image" class="form-control">
                 </div>
             </div>
             <button class="btn btn-warning w-100 mt-3">Update Product</button>
@@ -181,23 +162,21 @@
 </div>
 
 <script>
-function viewProduct(name,category,price,stock,desc){
-    v_p_name.innerText=name;
-    v_p_category.innerText=category;
-    v_p_price.innerText=price;
-    v_p_stock.innerText=stock;
-    v_p_desc.innerText=desc;
-    new bootstrap.Modal(viewProductModal).show();
+function openEditProduct(id, name, category, price, old_price, desc) {
+    document.getElementById('ep_name').value = name;
+    document.getElementById('ep_category').value = category;
+    document.getElementById('ep_price').value = price;
+    document.getElementById('ep_old_price').value = old_price;
+    document.getElementById('ep_desc').value = desc;
+    document.getElementById('editProductForm').action = '/admin/products/' + id;
+    new bootstrap.Modal(document.getElementById('editProductModal')).show();
 }
 
-function editProduct(name,category,price,stock,desc){
-    e_p_name.value=name;
-    e_p_category.value=category;
-    e_p_price.value=price;
-    e_p_stock.value=stock;
-    e_p_desc.value=desc;
-    new bootstrap.Modal(editProductModal).show();
-}
+document.getElementById('productSearch').addEventListener('keyup', function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#productsTable tbody tr').forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+    });
+});
 </script>
-
 @endsection

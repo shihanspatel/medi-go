@@ -6,39 +6,33 @@
 @section('content')
 
 <div class="card border-0 shadow-sm rounded-4 p-4">
-    <h5 class="fw-bold mb-3">Wishlist Products</h5>
+    <h5 class="fw-bold mb-3">All Wishlist Items</h5>
 
     <div class="table-responsive">
         <table class="table align-middle table-hover">
-            <thead>
+            <thead class="table-light">
                 <tr>
                     <th>#</th>
+                    <th>User</th>
                     <th>Product</th>
                     <th>Category</th>
                     <th>Price</th>
-                    <th>Status</th>
-                    <th class="text-end">Action</th>
                 </tr>
             </thead>
             <tbody>
+                @forelse($wishlists as $i => $item)
                 <tr>
-                    <td>1</td>
-                    <td>Vitamin C Tablets</td>
-                    <td>Wellness</td>
-                    <td>₹120</td>
-                    <td><span class="badge bg-success">Available</span></td>
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-success">
-                            <i class="fas fa-cart-plus"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $item->user->name ?? 'N/A' }}</td>
+                    <td>{{ $item->product->name ?? 'N/A' }}</td>
+                    <td>{{ $item->product->category ?? '-' }}</td>
+                    <td>₹{{ $item->product->price ?? 0 }}</td>
                 </tr>
+                @empty
+                <tr><td colspan="5" class="text-center text-muted">No wishlist items found.</td></tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 </div>
-
 @endsection

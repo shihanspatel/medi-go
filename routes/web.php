@@ -9,6 +9,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\normal_controller;
+use App\Http\Controllers\AdminController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\GoogleController;
@@ -63,17 +64,35 @@ Route::middleware('auth')->group(function () {
     Route::post('/rating/store', [RatingController::class, 'store'])->name('rating.store');
 });
 
-Route::prefix('admin')->middleware('auth')->group(function () {
-    Route::view('/dashboard', 'admin.Admin_dashboard');
-    Route::view('/users', 'admin.admin_User');
-    Route::view('/categories', 'admin.admin_categories');
-    Route::view('/products', 'admin.admin_products');
-    Route::view('/orders', 'admin.Admin_orders');
-    Route::view('/ratings', 'admin.Admin_ratings');
-    Route::view('/contact', 'admin.Admin_contact');
-    Route::view('/cart', 'admin.Admin_cart');
-    Route::view('/wishlist', 'admin.admin_wishlist');
-    Route::view('/profile', 'admin.admin_profile');
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::delete('/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+
+    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
+    Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+
+    Route::get('/categories', [AdminController::class, 'categories'])->name('admin.categories');
+    Route::post('/categories', [AdminController::class, 'storeCategory'])->name('admin.categories.store');
+    Route::put('/categories/{id}', [AdminController::class, 'updateCategory'])->name('admin.categories.update');
+    Route::delete('/categories/{id}', [AdminController::class, 'deleteCategory'])->name('admin.categories.delete');
+
+    Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
+    Route::put('/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])->name('admin.orders.status');
+
+    Route::get('/ratings', [AdminController::class, 'ratings'])->name('admin.ratings');
+    Route::delete('/ratings/{id}', [AdminController::class, 'deleteRating'])->name('admin.ratings.delete');
+
+    Route::get('/contact', [AdminController::class, 'contact'])->name('admin.contact');
+    Route::delete('/contact/{id}', [AdminController::class, 'deleteContact'])->name('admin.contact.delete');
+
+    Route::get('/cart', [AdminController::class, 'cart'])->name('admin.cart');
+    Route::get('/wishlist', [AdminController::class, 'wishlist'])->name('admin.wishlist');
+
+    Route::view('/profile', 'admin.Admin_profile')->name('admin.profile');
 });
 
 Route::middleware(['auth'])->group(function () {
