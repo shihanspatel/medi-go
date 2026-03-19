@@ -202,7 +202,7 @@
             <div class="empty-state text-center py-5">
                 <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
                 <h4>Your Cart is Empty</h4>
-                <a href="{{ url('/medicines') }}"
+                <a href="{{ url('/home') }}"
                     class="btn btn-primary rounded-pill mt-3">
                     Continue Shopping
                 </a>

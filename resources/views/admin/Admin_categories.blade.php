@@ -39,9 +39,12 @@
                     <td>{{ $cat->name }}</td>
                     <td>{{ $cat->slug }}</td>
                     <td>
-                        <span class="badge {{ $cat->status === 'active' ? 'bg-success' : 'bg-secondary' }}">
-                            {{ ucfirst($cat->status) }}
-                        </span>
+                        <form action="{{ route('admin.categories.toggle-status', $cat->id) }}" method="POST" class="d-inline">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="badge border-0 {{ $cat->status === 'active' ? 'bg-success' : 'bg-secondary' }}" style="cursor:pointer">
+                                {{ ucfirst($cat->status) }}
+                            </button>
+                        </form>
                     </td>
                     <td class="text-end">
                         <button class="btn btn-sm btn-warning"

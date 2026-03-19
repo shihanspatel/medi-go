@@ -39,7 +39,7 @@
                     <td>
                         <div class="d-flex align-items-center gap-2">
                             @if($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}" width="40" class="rounded" onerror="this.src='https://via.placeholder.com/40'">
+                                <img src="{{ asset('images/product_Images/' . $product->image) }}" width="40" class="rounded" onerror="this.src='https://via.placeholder.com/40'">
                             @endif
                             {{ $product->name }}
                         </div>

@@ -26,6 +26,8 @@ class User extends Authenticatable
         'state',
         'pincode',
         'address',
+        'role',
+        'status',
     ];
 
     /**

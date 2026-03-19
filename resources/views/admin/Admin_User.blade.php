@@ -27,6 +27,7 @@
                     <th>Email</th>
                     <th>City</th>
                     <th>State</th>
+                    <th>Role</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -38,10 +39,15 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->city ?? '-' }}</td>
                     <td>{{ $user->state ?? '-' }}</td>
+                    <td><span class="badge {{ $user->role === 'admin' ? 'bg-danger' : 'bg-success' }}">{{ ucfirst($user->role ?? 'user') }}</span></td>
                     <td>
                         <button class="btn btn-sm btn-primary"
                             onclick="viewUser('{{ addslashes($user->name) }}','{{ $user->email }}','{{ $user->city }}','{{ $user->state }}','{{ $user->address }}','{{ $user->pincode }}')">
                             <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning"
+                            onclick="openEditUser({{ $user->id }},'{{ addslashes($user->name) }}','{{ $user->email }}','{{ $user->city }}','{{ $user->state }}','{{ addslashes($user->address) }}','{{ $user->pincode }}')">
+                            <i class="fas fa-edit"></i>
                         </button>
                         <form action="{{ route('admin.users.delete', $user->id) }}" method="POST" class="d-inline"
                             onsubmit="return confirm('Delete this user?')">
@@ -51,7 +57,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="text-center text-muted">No users found.</td></tr>
+                <tr><td colspan="7" class="text-center text-muted">No users found.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -78,15 +84,70 @@
   </div>
 </div>
 
+<!-- EDIT USER MODAL -->
+<div class="modal fade" id="editUserModal">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit User</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editUserForm" method="POST">
+            @csrf @method('PUT')
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Name</label>
+                    <input id="eu_name" name="name" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Email</label>
+                    <input id="eu_email" name="email" type="email" class="form-control" required>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label fw-bold">Address</label>
+                    <input id="eu_address" name="address" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">City</label>
+                    <input id="eu_city" name="city" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">State</label>
+                    <input id="eu_state" name="state" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Pincode</label>
+                    <input id="eu_pincode" name="pincode" class="form-control">
+                </div>
+            </div>
+            <button class="btn btn-warning w-100 mt-3 fw-bold">Update User</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 function viewUser(name, email, city, state, address, pincode) {
-    document.getElementById('v_name').innerText = name;
-    document.getElementById('v_email').innerText = email;
-    document.getElementById('v_city').innerText = city || '-';
-    document.getElementById('v_state').innerText = state || '-';
+    document.getElementById('v_name').innerText    = name    || '-';
+    document.getElementById('v_email').innerText   = email   || '-';
+    document.getElementById('v_city').innerText    = city    || '-';
+    document.getElementById('v_state').innerText   = state   || '-';
     document.getElementById('v_address').innerText = address || '-';
     document.getElementById('v_pincode').innerText = pincode || '-';
     new bootstrap.Modal(document.getElementById('viewUserModal')).show();
+}
+
+function openEditUser(id, name, email, city, state, address, pincode) {
+    document.getElementById('eu_name').value    = name    || '';
+    document.getElementById('eu_email').value   = email   || '';
+    document.getElementById('eu_city').value    = city    || '';
+    document.getElementById('eu_state').value   = state   || '';
+    document.getElementById('eu_address').value = address || '';
+    document.getElementById('eu_pincode').value = pincode || '';
+    document.getElementById('editUserForm').action = '/admin/users/' + id;
+    new bootstrap.Modal(document.getElementById('editUserModal')).show();
 }
 
 document.getElementById('userSearch').addEventListener('keyup', function () {

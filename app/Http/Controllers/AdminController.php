@@ -11,6 +11,7 @@ use App\Models\ContactUs;
 use App\Models\Cart;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -36,6 +37,21 @@ class AdminController extends Controller
         return back()->with('success', 'User deleted.');
     }
 
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $request->validate([
+            'name'    => 'required',
+            'email'   => 'required|email|unique:users,email,' . $id,
+            'city'    => 'nullable',
+            'state'   => 'nullable',
+            'address' => 'nullable',
+            'pincode' => 'nullable',
+        ]);
+        $user->update($request->only('name', 'email', 'city', 'state', 'address', 'pincode'));
+        return back()->with('success', 'User updated.');
+    }
+
     public function products()
     {
         $products   = Product::with('ratings')->latest()->get();
@@ -55,7 +71,9 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('product_Images', 'public');
+            $filename = time() . '_' . $request->file('image')->getClientOriginalName();
+            $request->file('image')->move(public_path('images/product_Images'), $filename);
+            $data['image'] = $filename;
         }
 
         Product::create($data);
@@ -75,7 +93,9 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('product_Images', 'public');
+            $filename = time() . '_' . $request->file('image')->getClientOriginalName();
+            $request->file('image')->move(public_path('images/product_Images'), $filename);
+            $data['image'] = $filename;
         }
 
         $product->update($data);
@@ -115,6 +135,19 @@ class AdminController extends Controller
         ]);
         $category->update($data);
         return back()->with('success', 'Category updated.');
+    }
+
+    public function toggleCategoryStatus($id)
+    {
+        $category = Category::findOrFail($id);
+        // supports both string ('active'/'inactive') and integer (1/0) columns
+        if ($category->status == 'active' || $category->status == 1) {
+            $category->status = 'inactive';
+        } else {
+            $category->status = 'active';
+        }
+        $category->save();
+        return back()->with('success', 'Category status updated.');
     }
 
     public function deleteCategory($id)
@@ -170,5 +203,46 @@ class AdminController extends Controller
     {
         $wishlists = Wishlist::with(['user', 'product'])->latest()->get();
         return view('admin.Admin_wishlist', compact('wishlists'));
+    }
+
+    public function profile()
+    {
+        /** @var User $admin */
+        $admin = auth()->user();
+        return view('admin.Admin_profile', compact('admin'));
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        /** @var User $admin */
+        $admin = auth()->user();
+        $request->validate([
+            'name'    => 'required',
+            'email'   => 'required|email|unique:users,email,' . $admin->id,
+            'city'    => 'nullable',
+            'state'   => 'nullable',
+            'address' => 'nullable',
+            'pincode' => 'nullable',
+        ]);
+        $admin->update($request->only('name', 'email', 'city', 'state', 'address', 'pincode'));
+        return back()->with('success', 'Profile updated successfully.');
+    }
+
+    public function profilePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password'         => 'required|min:6|confirmed',
+        ]);
+
+        /** @var User $admin */
+        $admin = auth()->user();
+
+        if (!Hash::check($request->current_password, $admin->password)) {
+            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
+        }
+
+        $admin->update(['password' => Hash::make($request->password)]);
+        return back()->with('success', 'Password changed successfully.');
     }
 }

@@ -78,7 +78,7 @@
         {{-- Product Image --}}
         <div class="col-lg-6">
             <div class="main-img-box mb-3">
-                <img src="{{ asset('uploads/products/'.$product->image) }}" class="main-img" alt="{{ $product->name }}">
+                <img src="{{ asset('images/product_Images/'.$product->image) }}" class="main-img" alt="{{ $product->name }}">
             </div>
         </div>
 

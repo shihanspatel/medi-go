@@ -10,8 +10,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\normal_controller;
 use App\Http\Controllers\AdminController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\GoogleController;
 
 
@@ -68,6 +66,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
     Route::delete('/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
 
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
@@ -78,6 +77,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/categories', [AdminController::class, 'categories'])->name('admin.categories');
     Route::post('/categories', [AdminController::class, 'storeCategory'])->name('admin.categories.store');
     Route::put('/categories/{id}', [AdminController::class, 'updateCategory'])->name('admin.categories.update');
+    Route::patch('/categories/{id}/toggle-status', [AdminController::class, 'toggleCategoryStatus'])->name('admin.categories.toggle-status');
     Route::delete('/categories/{id}', [AdminController::class, 'deleteCategory'])->name('admin.categories.delete');
 
     Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
@@ -92,19 +92,34 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/cart', [AdminController::class, 'cart'])->name('admin.cart');
     Route::get('/wishlist', [AdminController::class, 'wishlist'])->name('admin.wishlist');
 
-    Route::view('/profile', 'admin.Admin_profile')->name('admin.profile');
+    Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
+    Route::put('/profile/update', [AdminController::class, 'profileUpdate'])->name('admin.profile.update');
+    Route::put('/profile/password', [AdminController::class, 'profilePassword'])->name('admin.profile.password');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/email/verify', function () {
-        return view('auth.verify-email');
-    })->name('verification.notice');
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
 
-    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-        $request->fulfill();
-        $user = $request->user();
-        $user->status = 'active';
-        $user->save();
-        return redirect()->route('login')->with('success', 'Email verified & account activated successfully!');
-    })->middleware(['signed'])->name('verification.verify');
-});
+Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Http\Request $request, $id, $hash) {
+    $user = \App\Models\Register::findOrFail($id);
+
+    // validate the hash
+    if (! hash_equals(sha1($user->getEmailForVerification()), (string) $hash)) {
+        abort(403, 'Invalid verification link.');
+    }
+
+    // validate the signature
+    if (! $request->hasValidSignature()) {
+        abort(403, 'Verification link expired or invalid.');
+    }
+
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+    }
+
+    $user->status = 'active';
+    $user->save();
+
+    return redirect()->route('login')->with('success', 'Email verified! Your account is now active. Please login.');
+})->middleware('signed')->name('verification.verify');

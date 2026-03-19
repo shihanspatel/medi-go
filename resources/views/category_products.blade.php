@@ -131,7 +131,7 @@
             </span>
             @endif
 
-            <img src="{{ asset('uploads/products/'.$product->image) }}"
+            <img src="{{ asset('images/product_Images/'.$product->image) }}"
                  class="prod-img"
                  alt="{{ $product->name }}">
         </div>

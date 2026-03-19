@@ -216,7 +216,7 @@
                                 {{ $product->discount }}% OFF
                             </span>
                             @endif
-                            <img src="{{ asset('uploads/products/'.$product->image) }}" class="prod-img" alt="{{ $product->name }}">
+                            <img src="{{ asset('images/product_Images/'.$product->image) }}" class="prod-img" alt="{{ $product->name }}">
                         </div>
                     </a>
 
