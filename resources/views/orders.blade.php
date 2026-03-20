@@ -184,65 +184,65 @@
 
 <div class="container pb-5">
     @if($orders->isEmpty())
-        <div class="empty-state">
-            <i class="fas fa-inbox"></i>
-            <h4>No Orders Yet</h4>
-            <p>You haven't placed any orders yet. Start shopping now!</p>
-            <a href="{{ url('/') }}" class="btn btn-success rounded-pill">
-                <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
-            </a>
-        </div>
+    <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <h4>No Orders Yet</h4>
+        <p>You haven't placed any orders yet. Start shopping now!</p>
+        <a href="{{ url('/') }}" class="btn btn-success rounded-pill">
+            Continue Shopping
+        </a>
+    </div>
     @else
-        @foreach($orders as $order)
-            <div class="order-card">
-                <div class="order-header">
-                    <div>
-                        <div class="order-id">Order #{{ $order->id }}</div>
-                        <div class="order-date">
-                            <i class="fas fa-calendar me-1"></i>{{ $order->created_at->format('d M Y, h:i A') }}
-                        </div>
-                    </div>
-                    <div class="text-end">
-                        <span class="status-badge status-{{ strtolower($order->payment_status) }}">
-                            {{ ucfirst($order->payment_status) }}
-                        </span>
-                    </div>
-                </div>
-
-                <div class="order-items">
-                    @foreach($order->items as $item)
-                        <div class="order-item">
-                            <div class="item-image">
-                                <img src="{{ asset('uploads/products/'.$item->product->image) }}" 
-                                     alt="{{ $item->product->name }}">
-                            </div>
-                            <div class="item-details">
-                                <div class="item-name">{{ $item->product->name }}</div>
-                                <div class="item-qty">Qty: {{ $item->quantity }}</div>
-                            </div>
-                            <div class="item-price">
-                                ₹{{ number_format($item->price * $item->quantity, 2) }}
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="order-summary">
-                    <div class="summary-row">
-                        <span>Subtotal</span>
-                        <span>₹{{ number_format($order->total_amount * 0.95, 2) }}</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Tax (5%)</span>
-                        <span>₹{{ number_format($order->total_amount * 0.05, 2) }}</span>
-                    </div>
-                    <div class="summary-row total">
-                        <span>Total Amount</span>
-                        <span>₹{{ number_format($order->total_amount, 2) }}</span>
-                    </div>
+    @foreach($orders as $order)
+    <div class="order-card">
+        <div class="order-header">
+            <div>
+                <div class="order-id">Order #{{ $order->id }}</div>
+                <div class="order-date">
+                    <i class="fas fa-calendar me-1"></i>{{ $order->created_at->format('d M Y, h:i A') }}
                 </div>
             </div>
-        @endforeach
+            <div class="text-end">
+                <span class="status-badge status-{{ strtolower($order->payment_status) }}">
+                    {{ ucfirst($order->payment_status) }}
+                </span>
+            </div>
+        </div>
+
+        <div class="order-items">
+            @foreach($order->items as $item)
+            <div class="order-item">
+                <div class="item-image">
+                    <img src="{{ asset('uploads/products/'.$item->product->image) }}"
+                        alt="{{ $item->product->name }}">
+                </div>
+                <div class="item-details">
+                    <div class="item-name">{{ $item->product->name }}</div>
+                    <div class="item-qty">Qty: {{ $item->quantity }}</div>
+                </div>
+                <div class="item-price">
+                    ₹{{ number_format($item->price * $item->quantity, 2) }}
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        <div class="order-summary">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>₹{{ number_format($order->total_amount * 0.95, 2) }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Tax (5%)</span>
+                <span>₹{{ number_format($order->total_amount * 0.05, 2) }}</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total Amount</span>
+                <span>₹{{ number_format($order->total_amount, 2) }}</span>
+            </div>
+        </div>
+    </div>
+    @endforeach
     @endif
 </div>
 
