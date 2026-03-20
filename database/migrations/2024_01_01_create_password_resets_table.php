@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->id();
+            $table->string('email')->unique();
+            $table->string('otp', 6);
+            $table->timestamp('otp_expires_at');
+            $table->boolean('otp_verified')->default(false);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('password_resets');
+    }
+};

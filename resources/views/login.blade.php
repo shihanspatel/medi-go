@@ -147,11 +147,160 @@
     .google-btn:hover {
         background: #f8fafc;
     }
+
+    /* INPUT VALIDATION */
+
+    .login-input.is-invalid {
+        border-color: #ef4444 !important;
+        background-color: #fef2f2;
+    }
+
+    .invalid-feedback {
+        color: #ef4444;
+        font-size: 0.85rem;
+        margin-top: 6px;
+        display: block;
+    }
+
+    /* TOAST NOTIFICATIONS */
+
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .toast {
+        background: white;
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 320px;
+        animation: slideInRight 0.4s ease;
+        border-left: 4px solid;
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(400px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideOutRight {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(400px);
+        }
+    }
+
+    .toast.hide {
+        animation: slideOutRight 0.4s ease forwards;
+    }
+
+    .toast-icon {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+
+    .toast-content {
+        flex: 1;
+    }
+
+    .toast-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 2px;
+    }
+
+    .toast-message {
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+
+    .toast-close {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .toast-close:hover {
+        opacity: 1;
+    }
+
+    .toast-success {
+        border-left-color: #10b981;
+        color: #166534;
+    }
+
+    .toast-success .toast-icon {
+        color: #10b981;
+    }
+
+    .toast-error {
+        border-left-color: #ef4444;
+        color: #991b1b;
+    }
+
+    .toast-error .toast-icon {
+        color: #ef4444;
+    }
+
+    .toast-warning {
+        border-left-color: #f59e0b;
+        color: #92400e;
+    }
+
+    .toast-warning .toast-icon {
+        color: #f59e0b;
+    }
+
+    .toast-info {
+        border-left-color: #3b82f6;
+        color: #1e40af;
+    }
+
+    .toast-info .toast-icon {
+        color: #3b82f6;
+    }
+
+    @media (max-width: 480px) {
+        .toast-container {
+            left: 10px;
+            right: 10px;
+            top: 10px;
+        }
+
+        .toast {
+            min-width: auto;
+        }
+    }
 </style>
 @endsection
 
 
 @section('content')
+
+<div class="toast-container" id="toastContainer"></div>
 
 <section class="login-section">
 
@@ -169,17 +318,6 @@
             Login to your Medi-Go account
         </p>
 
-
-        {{-- ERROR MESSAGE --}}
-        @if(session('error'))
-
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-
-        @endif
-
-
         <form action="{{ route('login') }}" method="POST" onsubmit="showLoading()">
 
             @csrf
@@ -192,11 +330,16 @@
 
                 <input type="email"
                     name="email"
-                    class="form-control login-input"
+                    class="form-control login-input @error('email') is-invalid @enderror"
                     placeholder="Enter your email"
+                    value="{{ old('email') }}"
                     required>
 
                 <i class="fas fa-envelope input-icon"></i>
+
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
 
             </div>
 
@@ -210,12 +353,16 @@
                 <input type="password"
                     name="password"
                     id="password"
-                    class="form-control login-input"
+                    class="form-control login-input @error('password') is-invalid @enderror"
                     placeholder="Enter your password"
                     required>
 
                 <i class="fas fa-eye input-icon"
                     onclick="togglePassword()"></i>
+
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
 
             </div>
 
@@ -226,7 +373,7 @@
                     <input type="checkbox"> Remember me
                 </label>
 
-                <a href="{{ url('forgot') }}"
+                <a href="{{ route('forgot.form') }}"
                     class="text-success fw-bold text-decoration-none">
                     Forgot?
                 </a>
@@ -268,22 +415,79 @@
 
 <script>
     function togglePassword() {
-
         let pass = document.getElementById("password");
-
         pass.type = pass.type === "password" ? "text" : "password";
-
     }
 
     function showLoading() {
-
         let btn = document.getElementById("loginBtn");
-
         btn.classList.add("loading");
-
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Logging in...';
-
     }
+
+    function showToast(type, title, message, duration = 4000) {
+        const container = document.getElementById('toastContainer');
+        const toastId = 'toast-' + Date.now();
+        
+        const toast = document.createElement('div');
+        toast.id = toastId;
+        toast.className = `toast toast-${type}`;
+        
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-exclamation-circle',
+            warning: 'fas fa-exclamation-triangle',
+            info: 'fas fa-info-circle'
+        };
+        
+        toast.innerHTML = `
+            <i class="toast-icon ${icons[type]}"></i>
+            <div class="toast-content">
+                <div class="toast-title">${title}</div>
+                <div class="toast-message">${message}</div>
+            </div>
+            <button class="toast-close" onclick="closeToast('${toastId}')">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            closeToast(toastId);
+        }, duration);
+    }
+
+    function closeToast(toastId) {
+        const toast = document.getElementById(toastId);
+        if (toast) {
+            toast.classList.add('hide');
+            setTimeout(() => {
+                toast.remove();
+            }, 400);
+        }
+    }
+
+    // Show toasts from session messages
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('success'))
+            showToast('success', 'Success!', '{{ session('success') }}');
+        @endif
+
+        @if(session('error'))
+            showToast('error', 'Error!', '{{ session('error') }}');
+        @endif
+
+        @if(session('warning'))
+            showToast('warning', 'Notice!', '{{ session('warning') }}');
+        @endif
+
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                showToast('error', 'Validation Error!', '{{ $error }}');
+            @endforeach
+        @endif
+    });
 </script>
 
 @endsection

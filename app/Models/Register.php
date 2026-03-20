@@ -34,6 +34,8 @@ class Register extends Authenticatable implements MustVerifyEmail
         'pincode',
         'status',
         'role',
+        'email_verified_at',
+        'user_image',
     ];
 
     /*

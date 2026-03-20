@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
+use App\Models\Register;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,18 +19,19 @@ class GoogleController extends Controller
     {
         $googleUser = Socialite::driver('google')->user();
 
-        $user = User::where('email', $googleUser->email)->first();
+        $user = Register::where('email', $googleUser->email)->first();
 
         if ($user) {
-            // User exists - only update name if needed, don't overwrite image
-            $user->update([
-                'name' => $googleUser->name,
-                'email_verified_at' => now(),
-                'status' => 'active',
-            ]);
+            if (!$user->email_verified_at) {
+                $user->update([
+                    'email_verified_at' => now(),
+                    'status' => 'active',
+                ]);
+            }
+            Auth::login($user);
+            return redirect()->route('home.index')->with('success', 'Welcome back!');
         } else {
-            // New user - create with Google avatar and random password
-            $user = User::create([
+            $newUser = Register::create([
                 'name' => $googleUser->name,
                 'email' => $googleUser->email,
                 'password' => Hash::make(uniqid()),
@@ -38,11 +39,10 @@ class GoogleController extends Controller
                 'email_verified_at' => now(),
                 'status' => 'active',
             ]);
+
+            Auth::login($newUser);
+            return redirect()->route('home.index')->with('success', 'Welcome! Account created with Google');
         }
-
-        Auth::login($user);
-
-        return redirect()->route('home.index')->with('success', 'Welcome! Logged in with Google');
     }
 
     private function downloadGoogleAvatar($avatarUrl)

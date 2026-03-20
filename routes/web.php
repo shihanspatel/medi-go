@@ -11,6 +11,7 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\normal_controller;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\ForgotPasswordController;
 
 
 Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
@@ -29,9 +30,13 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [normal_controller::class, 'login_check'])->name('login.check');
     Route::get('/register', [normal_controller::class, 'create'])->name('register');
     Route::post('/register', [normal_controller::class, 'store'])->name('register.store');
-    Route::view('/forgot', 'forgot_password_form');
-    Route::view('/otp', 'forgot_password_otp_page');
-    Route::view('/reset-pass', 'forgot_password_set_new_pass');
+    
+    Route::get('/forgot', [ForgotPasswordController::class, 'showForm'])->name('forgot.form');
+    Route::post('/forgot', [ForgotPasswordController::class, 'sendOtp'])->name('forgot.send');
+    Route::get('/otp', [ForgotPasswordController::class, 'showOtpForm'])->name('forgot.otp');
+    Route::post('/otp', [ForgotPasswordController::class, 'verifyOtp'])->name('forgot.verify');
+    Route::get('/reset-pass', [ForgotPasswordController::class, 'showResetForm'])->name('forgot.reset');
+    Route::post('/reset-pass', [ForgotPasswordController::class, 'resetPassword'])->name('forgot.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -43,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [normal_controller::class, 'Profile_index'])->name('profile');
     Route::put('/profile/update', [normal_controller::class, 'Profile_update'])->name('profile.update');
     Route::post('/profile/upload-photo', [AuthController::class, 'uploadPhoto'])->name('profile.upload-photo');
+    Route::post('/password/change', [normal_controller::class, 'changePassword'])->name('password.change');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

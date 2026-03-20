@@ -165,6 +165,31 @@ class normal_controller extends Controller
         return back()->with('success', 'Profile updated successfully');
     }
 
+    // ================= CHANGE PASSWORD =================
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Current password is incorrect']);
+        }
+
+        $user->update(['password' => Hash::make($request->new_password)]);
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')
+            ->with('success', 'Password changed successfully! Please login with your new password.');
+    }
+
     // ================= GOOGLE LOGIN =================
 
     public function redirectToGoogle()

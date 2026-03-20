@@ -148,8 +148,16 @@
                 {{-- Description Tab --}}
                 <div class="tab-pane fade show active" id="desc">
                     <div class="bg-white p-4 rounded-4 border border-light">
-                        <h5 class="fw-bold mb-3">Product Details</h5>
-                        <p class="text-secondary">{{ $product->description ?? 'No description available' }}</p>
+                        <h5 class="fw-bold mb-4">Product Details</h5>
+                        <p class="text-secondary mb-4" style="line-height: 1.8;">{{ $product->description ?? 'No description available' }}</p>
+                        
+                        @if($product->ingredients)
+                            <hr>
+                            <h5 class="fw-bold mb-3 mt-4">Ingredients</h5>
+                            <div class="bg-light p-3 rounded-3">
+                                <p class="text-secondary mb-0" style="line-height: 1.8;">{{ $product->ingredients }}</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
 

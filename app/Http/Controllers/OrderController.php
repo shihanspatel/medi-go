@@ -11,7 +11,6 @@ use Razorpay\Api\Api;
 class OrderController extends Controller
 {
     
-    // Checkout Logic
     public function checkout()
     {
         $cartItems = Cart::with('product')
@@ -19,7 +18,13 @@ class OrderController extends Controller
             ->get();
 
         if ($cartItems->isEmpty()) {
-            return back()->with('error', 'Cart is empty');
+            return response()->json(['success' => false, 'message' => 'Cart is empty'], 400);
+        }
+
+        foreach ($cartItems as $item) {
+            if (!$item->product || !$item->product->price) {
+                return response()->json(['success' => false, 'message' => 'Product price not found'], 400);
+            }
         }
 
         DB::beginTransaction();
@@ -29,6 +34,10 @@ class OrderController extends Controller
             $total = $cartItems->sum(function ($item) {
                 return $item->product->price * $item->quantity;
             });
+
+            if ($total <= 0) {
+                throw new \Exception('Invalid total amount');
+            }
 
             $order = Order::create([
                 'user_id' => auth()->id(),
@@ -48,7 +57,6 @@ class OrderController extends Controller
 
             DB::commit();
 
-            // Create Razorpay order
             $api = new Api(env('RAZORPAY_KEY_ID'), env('RAZORPAY_KEY_SECRET'));
             $razorpayOrder = $api->order->create([
                 'amount' => $order->total_amount * 100,
@@ -72,11 +80,14 @@ class OrderController extends Controller
         } catch (\Exception $e) {
 
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'Something went wrong'], 500);
+            \Log::error('Checkout Error: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            return response()->json([
+                'success' => false, 
+                'message' => 'Error creating order: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    // Show Orders
     public function index()
     {
         $orders = Order::with('items.product')

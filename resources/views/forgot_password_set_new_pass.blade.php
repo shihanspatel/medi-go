@@ -1,6 +1,6 @@
 @extends('master_nav')
 
-@section('title', 'Forgot Password - Medi-Go')
+@section('title', 'Reset Password - Medi-Go')
 
 @section('styles')
 <style>
@@ -123,8 +123,13 @@
         display: block;
     }
 
+    .password-input-wrapper {
+        position: relative;
+    }
+
     .form-control {
         padding: 14px 18px;
+        padding-right: 45px;
         border-radius: 14px;
         border: 2px solid #e5e7eb;
         background-color: #f9fafb;
@@ -155,6 +160,21 @@
         font-size: 0.85rem;
         margin-top: 6px;
         display: block;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #9ca3af;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+    }
+
+    .password-toggle:hover {
+        color: var(--primary);
     }
 
     .alert {
@@ -233,7 +253,7 @@
         transform: translateX(-3px);
     }
 
-    .info-box {
+    .password-requirements {
         background: #f0fdf4;
         border-left: 4px solid var(--primary);
         padding: 12px 15px;
@@ -243,7 +263,7 @@
         margin-bottom: 20px;
     }
 
-    .info-box i {
+    .password-requirements i {
         margin-right: 8px;
         color: var(--primary);
     }
@@ -257,11 +277,11 @@
         
         <div class="text-center mb-4">
             <div class="icon-wrapper">
-                <i class="fas fa-lock-open"></i>
+                <i class="fas fa-key"></i>
             </div>
-            <h3>Forgot Password?</h3>
+            <h3>Set New Password</h3>
             <p class="subtitle">
-                No worries! Enter your email and we'll send you a code to reset your password.
+                Create a strong password to secure your account
             </p>
         </div>
 
@@ -275,25 +295,43 @@
             </div>
         @endif
 
-        <div class="info-box">
-            <i class="fas fa-info-circle"></i>
-            We'll send a 6-digit OTP to your registered email
+        <div class="password-requirements">
+            <i class="fas fa-shield-alt"></i>
+            Minimum 8 characters required
         </div>
 
-        <form action="{{ route('forgot.send') }}" method="POST">
+        <form action="{{ route('forgot.update') }}" method="POST">
             @csrf
+            <input type="hidden" name="email" value="{{ session('email') }}">
 
             <div class="form-group">
-                <label class="form-label">Email Address</label>
-                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" 
-                    placeholder="your.email@example.com" required autofocus>
-                @error('email')
+                <label class="form-label">New Password</label>
+                <div class="password-input-wrapper">
+                    <input type="password" name="password" id="password" 
+                        class="form-control @error('password') is-invalid @enderror" 
+                        placeholder="Enter new password" required>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('password')"></i>
+                </div>
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <div class="password-input-wrapper">
+                    <input type="password" name="password_confirmation" id="password_confirmation" 
+                        class="form-control @error('password_confirmation') is-invalid @enderror" 
+                        placeholder="Confirm password" required>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('password_confirmation')"></i>
+                </div>
+                @error('password_confirmation')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
             <button type="submit" class="btn-submit">
-                <i class="fas fa-paper-plane me-2"></i>Send OTP Code
+                <i class="fas fa-check me-2"></i>Reset Password
             </button>
 
         </form>
@@ -308,5 +346,22 @@
 
     </div>
 </div>
+
+<script>
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = event.target;
+        
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+</script>
 
 @endsection

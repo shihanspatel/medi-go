@@ -350,21 +350,40 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form onsubmit="event.preventDefault(); alert('Password backend not yet created!');">
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong>
+                        @foreach ($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                <form action="{{ route('password.change') }}" method="POST">
+                    @csrf
                     <div class="mb-3">
                         <label class="form-label">Current Password</label>
-                        <input type="password" class="form-control" placeholder="••••••••">
+                        <input type="password" name="current_password" class="form-control @error('current_password') is-invalid @enderror" placeholder="••••••••" required>
+                        @error('current_password')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
                     <hr class="my-4 text-secondary opacity-25">
                     <div class="mb-3">
                         <label class="form-label">New Password</label>
-                        <input type="password" class="form-control" placeholder="Minimum 8 characters">
+                        <input type="password" name="new_password" class="form-control @error('new_password') is-invalid @enderror" placeholder="Minimum 6 characters" required>
+                        @error('new_password')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control" placeholder="Confirm password">
+                        <input type="password" name="new_password_confirmation" class="form-control" placeholder="Confirm password" required>
                     </div>
-                    <button type="submit" class="btn btn-dark w-100 py-2 rounded-pill fw-bold">Update Password</button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-light w-100 rounded-pill fw-bold" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-dark w-100 py-2 rounded-pill fw-bold">Update Password</button>
+                    </div>
                 </form>
             </div>
         </div>

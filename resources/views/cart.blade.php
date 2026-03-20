@@ -329,7 +329,7 @@
                                     window.location.href = '{{ route("orders.index") }}';
                                 }, 1500);
                             } else {
-                                alert('Payment verification failed');
+                                alert('Payment verification failed: ' + (result.message || 'Unknown error'));
                             }
                         });
                     },
@@ -344,12 +344,13 @@
                 var rzp1 = new Razorpay(options);
                 rzp1.open();
             } else {
-                alert('Error creating order');
+                alert('Error creating order: ' + (data.message || 'Unknown error'));
+                console.error('Checkout error:', data);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Something went wrong');
+            alert('Something went wrong: ' + error.message);
         });
     });
 </script>
