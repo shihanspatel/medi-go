@@ -409,7 +409,7 @@
                     </div>
 
                     {{-- Remove Item --}}
-                    <form action="{{ route('cart.remove',$item->id) }}" method="POST">
+                    <form action="{{ route('cart.remove',$item->id) }}" method="POST" onsubmit="return confirmDelete('Remove this item from cart?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn-remove">
@@ -505,12 +505,14 @@
     function incrementQty(btn) {
         const input = btn.parentElement.querySelector('.qty-input');
         input.value = parseInt(input.value) + 1;
+        input.form.submit();
     }
 
     function decrementQty(btn) {
         const input = btn.parentElement.querySelector('.qty-input');
         if (parseInt(input.value) > 1) {
             input.value = parseInt(input.value) - 1;
+            input.form.submit();
         }
     }
 

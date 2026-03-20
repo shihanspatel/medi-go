@@ -50,7 +50,7 @@
                             <i class="fas fa-edit"></i>
                         </button>
                         <form action="{{ route('admin.users.delete', $user->id) }}" method="POST" class="d-inline"
-                            onsubmit="return confirm('Delete this user?')">
+                            onsubmit="return confirmDelete('Delete this user? This action cannot be undone.');">
                             @csrf @method('DELETE')
                             <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                         </form>

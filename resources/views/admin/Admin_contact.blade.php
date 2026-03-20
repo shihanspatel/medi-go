@@ -46,7 +46,7 @@
                             <i class="fas fa-eye"></i>
                         </button>
                         <form action="{{ route('admin.contact.delete', $msg->id) }}" method="POST" class="d-inline"
-                            onsubmit="return confirm('Delete this message?')">
+                            onsubmit="return confirmDelete('Delete this message?');">
                             @csrf @method('DELETE')
                             <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                         </form>

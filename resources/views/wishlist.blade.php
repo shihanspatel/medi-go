@@ -283,7 +283,7 @@
                         </form>
 
                         {{-- REMOVE --}}
-                        <form action="{{ route('wishlist.remove',$item->id) }}" method="POST">
+                        <form action="{{ route('wishlist.remove',$item->id) }}" method="POST" onsubmit="return confirmDelete('Remove from wishlist?');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="action-btn btn-remove" style="flex: 0.4;">

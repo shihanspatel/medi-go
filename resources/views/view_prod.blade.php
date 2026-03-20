@@ -123,9 +123,15 @@
                         <i class="fas fa-shopping-cart me-2"></i> Add to Cart
                     </button>
                 </form>
-                <button class="btn btn-outline-dark rounded-circle p-2" style="width: 45px; height: 45px;">
-                    <i class="far fa-heart"></i>
-                </button>
+                @auth
+                <form action="{{ route('wishlist.add') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <button type="submit" class="btn btn-outline-danger rounded-circle p-2" style="width: 45px; height: 45px; border-width: 2px;" title="Add to Wishlist">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </form>
+                @endauth
             </div>
 
             <div class="border-top pt-4">

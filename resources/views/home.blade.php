@@ -322,14 +322,26 @@
                             @endif
                         </div>
 
-                        <form action="{{ route('cart.add') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <button type="submit" class="add-btn">
-                                <i class="fas fa-cart-plus me-1"></i>
-                                Add to Cart
-                            </button>
-                        </form>
+                        <div class="d-flex gap-2">
+                            <form action="{{ route('cart.add') }}" method="POST" class="flex-grow-1">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="add-btn">
+                                    <i class="fas fa-cart-plus me-1"></i>
+                                    Add to Cart
+                                </button>
+                            </form>
+                            @auth
+                            <form action="{{ route('wishlist.add') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button type="submit" class="btn btn-outline-danger rounded-circle p-2" style="width: 45px; height: 45px; border-width: 2px;" title="Add to Wishlist">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </form>
+                            @endauth
+                        </div>
                     </div>
                 </div>
             </div>

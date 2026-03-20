@@ -348,6 +348,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Confirmation Dialog for Delete Operations
+        function confirmDelete(message = 'Are you sure you want to delete this item? This action cannot be undone.') {
+            return confirm(message);
+        }
+
         // Toast Notifications
         @if(session('success'))
             showToast('{{ session('success') }}', 'success');
