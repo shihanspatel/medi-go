@@ -8,10 +8,13 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\Rating;
 use App\Models\ContactUs;
+use App\Models\ContactReply;
 use App\Models\Cart;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactReplyMail;
 
 class AdminController extends Controller
 {
@@ -228,21 +231,21 @@ class AdminController extends Controller
         return back()->with('success', 'Profile updated successfully.');
     }
 
-    public function profilePassword(Request $request)
+    public function replyContact(Request $request, $id)
     {
         $request->validate([
-            'current_password' => 'required',
-            'password'         => 'required|min:6|confirmed',
+            'reply_message' => 'required|min:10',
         ]);
 
-        /** @var User $admin */
-        $admin = auth()->user();
+        $contact = ContactUs::findOrFail($id);
 
-        if (!Hash::check($request->current_password, $admin->password)) {
-            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
-        }
+        ContactReply::create([
+            'contact_id' => $id,
+            'reply_message' => $request->reply_message,
+        ]);
 
-        $admin->update(['password' => Hash::make($request->password)]);
-        return back()->with('success', 'Password changed successfully.');
+        Mail::to($contact->email)->send(new ContactReplyMail($contact->first_name, $request->reply_message, $contact->email));
+
+        return back()->with('success', 'Reply sent successfully!');
     }
 }

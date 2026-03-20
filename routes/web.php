@@ -93,6 +93,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::delete('/ratings/{id}', [AdminController::class, 'deleteRating'])->name('admin.ratings.delete');
 
     Route::get('/contact', [AdminController::class, 'contact'])->name('admin.contact');
+    Route::post('/contact/{id}/reply', [AdminController::class, 'replyContact'])->name('admin.contact.reply');
     Route::delete('/contact/{id}', [AdminController::class, 'deleteContact'])->name('admin.contact.delete');
 
     Route::get('/cart', [AdminController::class, 'cart'])->name('admin.cart');
