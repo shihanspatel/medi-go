@@ -29,6 +29,11 @@ class GoogleController extends Controller
                 ]);
             }
             Auth::login($user);
+            
+            // Role-wise redirect
+            if ($user->role === 'admin') {
+                return redirect('/admin/dashboard')->with('success', 'Welcome back, Admin!');
+            }
             return redirect()->route('home.index')->with('success', 'Welcome back!');
         } else {
             $newUser = Register::create([
@@ -38,6 +43,7 @@ class GoogleController extends Controller
                 'user_image' => $this->downloadGoogleAvatar($googleUser->getAvatar()),
                 'email_verified_at' => now(),
                 'status' => 'active',
+                'role' => 'user',
             ]);
 
             Auth::login($newUser);
