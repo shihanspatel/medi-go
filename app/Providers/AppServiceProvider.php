@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\Wishlist;
 use App\Models\Order;
+use App\Models\Footer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,10 +41,13 @@ class AppServiceProvider extends ServiceProvider
                 $orderCount = 0;
             }
 
+            $footerData = Footer::all();
+
             $view->with([
                 'cartCount' => $cartCount,
                 'wishlistCount' => $wishlistCount,
-                'orderCount' => $orderCount
+                'orderCount' => $orderCount,
+                'footerData' => $footerData
             ]);
         });
     }

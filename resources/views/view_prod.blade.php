@@ -103,7 +103,7 @@
             </div>
 
             <div class="product-price mb-4">
-                ₹{{ number_format($product->price, 2) }}
+                ₹<span id="totalPrice">{{ number_format($product->price, 2) }}</span>
                 @if($product->old_price)
                     <span class="old-price">₹{{ number_format($product->old_price, 2) }}</span>
                 @endif
@@ -111,14 +111,15 @@
 
             <div class="d-flex align-items-center gap-3 mb-4">
                 <div class="qty-wrapper">
-                    <button class="qty-btn" onclick="this.nextElementSibling.stepDown()"><i class="fas fa-minus"></i></button>
-                    <input type="number" class="qty-val" value="1" min="1" readonly>
-                    <button class="qty-btn" onclick="this.previousElementSibling.stepUp()"><i class="fas fa-plus"></i></button>
+                    <button class="qty-btn" type="button" onclick="decreaseQty()"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="quantity" class="qty-val" value="1" min="1" readonly>
+                    <button class="qty-btn" type="button" onclick="increaseQty()"><i class="fas fa-plus"></i></button>
                 </div>
-                <form action="{{ route('cart.add') }}" method="POST" class="flex-grow-1">
+                <form action="{{ route('cart.add') }}" method="POST" class="flex-grow-1" id="addToCartForm">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <button class="btn btn-success rounded-pill px-5 py-2 fw-bold w-100">
+                    <input type="hidden" id="quantityInput" name="quantity" value="1">
+                    <button type="submit" class="btn btn-success rounded-pill px-5 py-2 fw-bold w-100">
                         <i class="fas fa-shopping-cart me-2"></i> Add to Cart
                     </button>
                 </form>
@@ -250,6 +251,35 @@
 </div>
 
 <script>
+    const basePrice = {{ $product->price }};
+
+    function increaseQty() {
+        const qtyInput = document.getElementById('quantity');
+        qtyInput.value = parseInt(qtyInput.value) + 1;
+        updatePrice();
+        updateQuantityInput();
+    }
+
+    function decreaseQty() {
+        const qtyInput = document.getElementById('quantity');
+        if (parseInt(qtyInput.value) > 1) {
+            qtyInput.value = parseInt(qtyInput.value) - 1;
+            updatePrice();
+            updateQuantityInput();
+        }
+    }
+
+    function updatePrice() {
+        const quantity = parseInt(document.getElementById('quantity').value);
+        const totalPrice = (basePrice * quantity).toFixed(2);
+        document.getElementById('totalPrice').textContent = totalPrice;
+    }
+
+    function updateQuantityInput() {
+        const quantity = document.getElementById('quantity').value;
+        document.getElementById('quantityInput').value = quantity;
+    }
+
     // Star rating interaction
     document.querySelectorAll('input[name="rating"]').forEach(radio => {
         radio.addEventListener('change', function() {

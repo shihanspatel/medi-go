@@ -468,26 +468,6 @@
         }
     }
 
-    // Show toasts from session messages
-    document.addEventListener('DOMContentLoaded', function() {
-        @if(session('success'))
-            showToast('success', 'Success!', '{{ session('success') }}');
-        @endif
-
-        @if(session('error'))
-            showToast('error', 'Error!', '{{ session('error') }}');
-        @endif
-
-        @if(session('warning'))
-            showToast('warning', 'Notice!', '{{ session('warning') }}');
-        @endif
-
-        @if($errors->any())
-            @foreach($errors->all() as $error)
-                showToast('error', 'Validation Error!', '{{ $error }}');
-            @endforeach
-        @endif
-    });
 </script>
 
 @endsection

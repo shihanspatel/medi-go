@@ -320,6 +320,31 @@
         @yield('content')
     </main>
 
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white mt-5 pt-5 pb-4" style="border-top: 1px solid #374151;">
+        <div class="container">
+            <div class="row g-5 mb-4">
+                @foreach($footerData as $item)
+                <div class="col-md-3 col-sm-6">
+                    <h6 class="fw-bold text-white mb-3">{{ $item->title }}</h6>
+                    <p class="text-light small lh-lg">{{ $item->content }}</p>
+                </div>
+                @endforeach
+            </div>
+
+            <hr class="bg-secondary my-4">
+
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                    <p class="text-light small mb-0">&copy; 2026 Medi-Go. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="text-light small mb-0">Designed with <i class="fas fa-heart text-danger"></i> by Medi-Go Team</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>

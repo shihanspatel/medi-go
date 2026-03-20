@@ -31,22 +31,24 @@ class CartController extends Controller
     public function add(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id'
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'nullable|integer|min:1'
         ]);
 
+        $quantity = $request->quantity ?? 1;
         $product = Product::find($request->product_id);
         $cartItem = Cart::where('user_id', auth()->id())
             ->where('product_id', $request->product_id)
             ->first();
 
         if ($cartItem) {
-            $cartItem->increment('quantity');
+            $cartItem->increment('quantity', $quantity);
             $message = $product->name . ' quantity updated in cart';
         } else {
             Cart::create([
                 'user_id' => auth()->id(),
                 'product_id' => $request->product_id,
-                'quantity' => 1
+                'quantity' => $quantity
             ]);
             $message = $product->name . ' added to cart';
         }

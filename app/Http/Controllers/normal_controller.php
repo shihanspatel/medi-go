@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Register;
+use App\Models\Order;
+use App\Models\Wishlist;
+use App\Models\Rating;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -94,7 +97,6 @@ class normal_controller extends Controller
                 ]);
             }
 
-            // Check Account Status
             if (Auth::user()->status != 'active') {
                 Auth::logout();
                 return back()->withErrors([
@@ -102,12 +104,14 @@ class normal_controller extends Controller
                 ]);
             }
 
-            // Redirect based on role
-            if (Auth::user()->role === 'admin') {
-                return redirect('/admin/dashboard');
+            $user = Auth::user();
+            $message = 'Welcome back, ' . $user->name . '!';
+
+            if ($user->role === 'admin') {
+                return redirect('/admin/dashboard')->with('success', $message . ' You are logged in as Admin.');
             }
 
-            return redirect()->route('home.index');
+            return redirect()->route('home.index')->with('success', $message);
         }
 
         return back()->withErrors([
@@ -135,8 +139,11 @@ class normal_controller extends Controller
     public function Profile_index()
     {
         $user = Auth::user();
+        $ordersCount = Order::where('user_id', $user->id)->count();
+        $wishlistCount = Wishlist::where('user_id', $user->id)->count();
+        $reviewsCount = Rating::where('user_id', $user->id)->count();
 
-        return view('after_login_user_profile', compact('user'));
+        return view('after_login_user_profile', compact('user', 'ordersCount', 'wishlistCount', 'reviewsCount'));
     }
 
 
