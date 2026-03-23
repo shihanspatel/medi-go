@@ -527,7 +527,7 @@
 
                 {{-- WISHLIST --}}
                 @auth
-                <form action="{{ route('wishlist.add') }}" method="POST" style="position: absolute; top: 14px; right: 14px; z-index: 2;">
+                <form action="{{ route('wishlist.add') }}" method="POST" class="wishlist-form" style="position: absolute; top: 14px; right: 14px; z-index: 2;">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <button type="submit" class="wishlist-btn" title="Add to Wishlist">
@@ -535,7 +535,7 @@
                     </button>
                 </form>
                 @else
-                <a href="{{ route('login') }}" class="wishlist-btn" title="Login to add to Wishlist">
+                <a href="{{ route('login') }}" class="wishlist-btn" title="Login to add to Wishlist" style="text-decoration: none;">
                     <i class="fas fa-heart"></i>
                 </a>
                 @endauth

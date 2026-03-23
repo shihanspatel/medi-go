@@ -249,7 +249,7 @@
 
                 <div class="hero-img-box">
 
-                    <img src="{{ asset('uploads/about/'.$hero->image) }}"
+                    <img src="{{ asset('images/about/'.$hero->image) }}"
                         class="img-fluid hero-img">
 
                 </div>
@@ -369,7 +369,7 @@
 
                     <div class="team-img-wrapper">
 
-                        <img src="{{ asset('uploads/team/'.$team->image) }}"
+                        <img src="{{ asset('images/team/'.$team->image) }}"
                             class="team-img">
 
                     </div>

@@ -171,7 +171,7 @@
         <div class="container">
 
             {{-- LOGO --}}
-            <a class="navbar-brand" href="{{ route('home') }}">
+            <a class="navbar-brand" href="{{ url('/') }}">
                 <i class="fas fa-plus-circle"></i> Medi-Go
             </a>
 

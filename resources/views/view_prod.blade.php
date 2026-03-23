@@ -124,13 +124,17 @@
                     </button>
                 </form>
                 @auth
-                <form action="{{ route('wishlist.add') }}" method="POST">
+                <form action="{{ route('wishlist.add') }}" method="POST" class="wishlist-form">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <button type="submit" class="btn btn-outline-danger rounded-circle p-2" style="width: 45px; height: 45px; border-width: 2px;" title="Add to Wishlist">
                         <i class="far fa-heart"></i>
                     </button>
                 </form>
+                @else
+                <a href="{{ route('login') }}" class="btn btn-outline-danger rounded-circle p-2" style="width: 45px; height: 45px; border-width: 2px; text-decoration: none;" title="Login to add to Wishlist">
+                    <i class="far fa-heart"></i>
+                </a>
                 @endauth
             </div>
 

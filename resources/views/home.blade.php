@@ -246,13 +246,13 @@
                 <p class="lead text-secondary mb-4">
                     {{ $banner->description }}
                 </p>
-                <a href="{{ route('home.index') }}" class="hero-btn shadow-lg">
+                <!-- <a href="{{ route('home.index') }}" class="hero-btn shadow-lg">
                     <i class="fas fa-shopping-cart me-2"></i>
                     {{ $banner->button_text }}
-                </a>
+                </a> -->
             </div>
             <div class="col-lg-6 text-center">
-                <img src="{{ asset('uploads/banners/'.$banner->image) }}" class="hero-img img-fluid" alt="Banner">
+                <img src="{{ asset('images/banners/'.$banner->image) }}" class="hero-img img-fluid" alt="Banner">
             </div>
         </div>
     </div>
@@ -332,15 +332,13 @@
                                     Add to Cart
                                 </button>
                             </form>
-                            @auth
-                            <form action="{{ route('wishlist.add') }}" method="POST">
+                            <form action="{{ route('wishlist.add') }}" method="POST" class="wishlist-form">
                                 @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <button type="submit" class="btn btn-outline-danger rounded-circle p-2" style="width: 45px; height: 45px; border-width: 2px;" title="Add to Wishlist">
                                     <i class="far fa-heart"></i>
                                 </button>
                             </form>
-                            @endauth
                         </div>
                     </div>
                 </div>
