@@ -179,6 +179,13 @@
         margin-bottom: 8px;
     }
 
+    .price-wrap .base-price {
+        font-size: 0.9rem;
+        color: #64748b;
+        display: block;
+        margin-top: 4px;
+    }
+
     .rating-stars {
         color: #fbbf24;
         font-size: 0.9rem;
@@ -273,20 +280,29 @@
 
                     <div class="card-actions">
 
-                        {{-- ADD TO CART --}}
-                        <form action="{{ route('cart.add') }}" method="POST" style="flex: 1;">
+                        {{-- ADD TO CART WITH QUANTITY --}}
+                        <form action="{{ route('cart.add') }}" method="POST" style="flex: 1; display: flex; gap: 8px; align-items: center;">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $item->product->id }}">
-                            <button type="submit" class="action-btn btn-add-cart w-100">
-                                <i class="fas fa-shopping-cart me-1"></i>Add to Cart
+                            <div style="display: flex; align-items: center; background: white; border: 2px solid #e5e7eb; border-radius: 8px; padding: 4px;">
+                                <button type="button" class="qty-btn-wish" onclick="decrementWishQty(this)" style="width: 28px; height: 28px; border: none; background: none; cursor: pointer; color: var(--primary); font-weight: 700; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-minus" style="font-size: 0.8rem;"></i>
+                                </button>
+                                <input type="number" name="quantity" class="qty-input-wish" value="1" min="1" style="width: 35px; border: none; text-align: center; background: transparent; font-weight: 700; outline: none;" readonly>
+                                <button type="button" class="qty-btn-wish" onclick="incrementWishQty(this)" style="width: 28px; height: 28px; border: none; background: none; cursor: pointer; color: var(--primary); font-weight: 700; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-plus" style="font-size: 0.8rem;"></i>
+                                </button>
+                            </div>
+                            <button type="submit" class="action-btn btn-add-cart" style="flex: 1;">
+                                <i class="fas fa-shopping-cart me-1"></i>Add
                             </button>
                         </form>
 
                         {{-- REMOVE --}}
-                        <form action="{{ route('wishlist.remove',$item->id) }}" method="POST" onsubmit="return confirmDelete('Remove from wishlist?');">
+                        <form action="{{ route('wishlist.remove',$item->id) }}" method="POST" onsubmit="return confirmDelete('Remove from wishlist?');" style="flex: 0.3;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="action-btn btn-remove" style="flex: 0.4;">
+                            <button type="submit" class="action-btn btn-remove w-100">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>
@@ -318,7 +334,8 @@
                     </div>
 
                     <div class="price-wrap">
-                        ₹{{ number_format($item->product->price, 2) }}
+                        ₹<span class="total-price-wish" data-base-price="{{ $item->product->price }}">{{ number_format($item->product->price, 2) }}</span>
+                        <span class="base-price">₹{{ number_format($item->product->price, 2) }} each</span>
                     </div>
 
                 </div>
@@ -346,5 +363,34 @@
 
     </div>
 </div>
+
+<script>
+    function incrementWishQty(btn) {
+        const input = btn.parentElement.querySelector('.qty-input-wish');
+        input.value = parseInt(input.value) + 1;
+        updateWishPrice(btn);
+    }
+
+    function decrementWishQty(btn) {
+        const input = btn.parentElement.querySelector('.qty-input-wish');
+        if (parseInt(input.value) > 1) {
+            input.value = parseInt(input.value) - 1;
+            updateWishPrice(btn);
+        }
+    }
+
+    function updateWishPrice(btn) {
+        const form = btn.closest('form');
+        const qtyInput = form.querySelector('.qty-input-wish');
+        const priceDisplay = form.closest('.card-actions').closest('.img-container').closest('.premium-wish-card').querySelector('.total-price-wish');
+        
+        if (priceDisplay) {
+            const basePrice = parseFloat(priceDisplay.dataset.basePrice);
+            const quantity = parseInt(qtyInput.value);
+            const totalPrice = (basePrice * quantity).toFixed(2);
+            priceDisplay.textContent = totalPrice;
+        }
+    }
+</script>
 
 @endsection

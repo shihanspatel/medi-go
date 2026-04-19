@@ -199,6 +199,21 @@
 
                 <div class="d-flex align-items-center gap-3">
 
+                    <div class="dropdown">
+                        <a class="nav-text-link dropdown-toggle" href="#" data-bs-toggle="dropdown" style="text-decoration: none;">
+                            <i class="fas fa-pills me-1"></i>Products
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-custom">
+                            @foreach($categories as $category)
+                            <li>
+                                <a href="{{ route('category.show', $category->slug) }}" class="dropdown-item-custom">
+                                    <i class="fas {{ $category->icon }} me-2"></i>{{ $category->name }}
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+
                     <a href="{{ url('/about') }}" class="nav-text-link">About Us</a>
 
                     <a href="{{ url('/contact-us') }}" class="nav-text-link">Contact Us</a>

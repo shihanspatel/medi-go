@@ -10,6 +10,7 @@ use App\Models\Cart;
 use App\Models\Wishlist;
 use App\Models\Order;
 use App\Models\Footer;
+use App\Models\Category;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,12 +43,14 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $footerData = Footer::all();
+            $categories = Category::where('status', 1)->get();
 
             $view->with([
                 'cartCount' => $cartCount,
                 'wishlistCount' => $wishlistCount,
                 'orderCount' => $orderCount,
-                'footerData' => $footerData
+                'footerData' => $footerData,
+                'categories' => $categories
             ]);
         });
     }

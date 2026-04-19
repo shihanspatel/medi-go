@@ -58,6 +58,11 @@ class CartController extends Controller
             ->where('product_id', $request->product_id)
             ->delete();
 
+        // Redirect to cart if coming from wishlist
+        if (strpos(url()->previous(), 'wishlist') !== false) {
+            return redirect()->route('cart.index')->with('success', $message);
+        }
+
         return back()->with('success', $message);
     }
 
